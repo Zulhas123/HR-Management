@@ -24,6 +24,13 @@ public static class DependencyInjection
         services.AddScoped<IRepository<Designation>, Repository<Designation>>();
         services.AddScoped<IRepository<EmploymentType>, Repository<EmploymentType>>();
         services.AddScoped<IRepository<Employee>, EmployeeRepository>();
+        services.AddScoped<IRepository<EmployeeDocument>, EmployeeDocumentRepository>();
+        services.AddScoped<IRepository<EmployeeEducation>, Repository<EmployeeEducation>>();
+        services.AddScoped<IRepository<EmployeeExperience>, Repository<EmployeeExperience>>();
+        services.AddScoped<IRepository<EmployeeTransfer>, EmployeeTransferRepository>();
+        services.AddScoped<IRepository<EmployeePromotion>, EmployeePromotionRepository>();
+        services.AddScoped<IRepository<EmployeeEmergencyContact>, Repository<EmployeeEmergencyContact>>();
+        services.AddScoped<IRepository<EmployeeFamilyMember>, Repository<EmployeeFamilyMember>>();
         services.AddScoped<IRepository<Shift>, Repository<Shift>>();
         services.AddScoped<IRepository<AttendanceRecord>, AttendanceRecordRepository>();
         services.AddScoped<IRepository<LeaveType>, Repository<LeaveType>>();

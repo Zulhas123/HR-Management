@@ -16,6 +16,13 @@ public static class DependencyInjection
         services.AddScoped<ICrudService<Department>, CrudService<Department>>();
         services.AddScoped<ICrudService<Designation>, CrudService<Designation>>();
         services.AddScoped<ICrudService<EmploymentType>, CrudService<EmploymentType>>();
+        services.AddScoped<ICrudService<EmployeeDocument>, CrudService<EmployeeDocument>>();
+        services.AddScoped<ICrudService<EmployeeEducation>, CrudService<EmployeeEducation>>();
+        services.AddScoped<ICrudService<EmployeeExperience>, CrudService<EmployeeExperience>>();
+        services.AddScoped<ICrudService<EmployeeTransfer>, CrudService<EmployeeTransfer>>();
+        services.AddScoped<ICrudService<EmployeePromotion>, CrudService<EmployeePromotion>>();
+        services.AddScoped<ICrudService<EmployeeEmergencyContact>, CrudService<EmployeeEmergencyContact>>();
+        services.AddScoped<ICrudService<EmployeeFamilyMember>, CrudService<EmployeeFamilyMember>>();
         services.AddScoped<ICrudService<Shift>, CrudService<Shift>>();
         services.AddScoped<ICrudService<AttendanceRecord>, CrudService<AttendanceRecord>>();
         services.AddScoped<ICrudService<LeaveType>, CrudService<LeaveType>>();

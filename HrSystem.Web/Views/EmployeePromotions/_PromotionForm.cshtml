@@ -1,0 +1,35 @@
+@model HrSystem.Web.ViewModels.EmployeePromotionFormVm
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="EffectiveDate" class="form-label"></label>
+            <input asp-for="EffectiveDate" class="form-control" />
+            <span asp-validation-for="EffectiveDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="FromDesignationId" class="form-label">From Designation</label>
+            <select asp-for="FromDesignationId" asp-items="Model.Designations" class="form-select">
+                <option value="">(none)</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ToDesignationId" class="form-label">To Designation</label>
+            <select asp-for="ToDesignationId" asp-items="Model.Designations" class="form-select">
+                <option value="">(none)</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="mb-3">
+            <label asp-for="Note" class="form-label"></label>
+            <input asp-for="Note" class="form-control" />
+            <span asp-validation-for="Note" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+

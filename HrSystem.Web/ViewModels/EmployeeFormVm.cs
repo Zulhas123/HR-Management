@@ -40,5 +40,22 @@ public sealed class EmployeeFormVm
 
     [StringLength(50)]
     public string? TinNumber { get; set; }
-}
 
+    [DataType(DataType.Date)]
+    public DateTime? ResignationDate { get; set; }
+
+    [StringLength(200)]
+    public string? BankName { get; set; }
+
+    [StringLength(100)]
+    public string? BankAccountNumber { get; set; }
+
+    [StringLength(100)]
+    public string? MobileBankingProvider { get; set; }
+
+    [StringLength(50)]
+    public string? MobileBankingNumber { get; set; }
+
+    public IFormFile? PhotoFile { get; set; }
+    public IFormFile? SignatureFile { get; set; }
+}

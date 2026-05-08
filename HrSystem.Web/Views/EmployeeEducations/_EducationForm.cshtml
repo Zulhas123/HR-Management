@@ -1,0 +1,33 @@
+@model HrSystem.Web.ViewModels.EmployeeEducationFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Degree" class="form-label"></label>
+            <input asp-for="Degree" class="form-control" />
+            <span asp-validation-for="Degree" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Institution" class="form-label"></label>
+            <input asp-for="Institution" class="form-control" />
+            <span asp-validation-for="Institution" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="PassingYear" class="form-label"></label>
+            <input asp-for="PassingYear" class="form-control" />
+            <span asp-validation-for="PassingYear" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Result" class="form-label"></label>
+            <input asp-for="Result" class="form-control" />
+            <span asp-validation-for="Result" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+

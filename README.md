@@ -14,6 +14,9 @@ Step 1 - Core HR - Employee Management:
 
 - Master data CRUD: Departments, Designations, Employment Types
 - Employee CRUD (auto-generates `EmployeeCode` as `EMP-000001`, ...)
+- Employee digital file: photo, signature, documents, education, experience
+- Transfer & promotion history
+- Emergency contact and family information
 - MVC screens + basic Bootstrap UI
 - REST API endpoints for employee CRUD
 

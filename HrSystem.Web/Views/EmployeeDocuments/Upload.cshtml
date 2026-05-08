@@ -1,0 +1,30 @@
+@model HrSystem.Web.ViewModels.EmployeeDocumentFormVm
+
+@{
+    ViewData["Title"] = "Upload Document";
+}
+
+<h1 class="h3">Upload Document</h1>
+
+<form method="post" enctype="multipart/form-data" class="mt-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="EmployeeId" />
+    <div class="mb-3">
+        <label asp-for="DocumentName" class="form-label"></label>
+        <input asp-for="DocumentName" class="form-control" />
+        <span asp-validation-for="DocumentName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DocumentType" class="form-label"></label>
+        <input asp-for="DocumentType" class="form-control" placeholder="NID/Contract/Certificate..." />
+        <span asp-validation-for="DocumentType" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="File" class="form-label"></label>
+        <input asp-for="File" class="form-control" type="file" />
+        <span asp-validation-for="File" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <a asp-action="Index" asp-route-employeeId="@Model.EmployeeId" class="btn btn-secondary">Cancel</a>
+</form>
+

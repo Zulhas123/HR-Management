@@ -11,6 +11,7 @@ public sealed class Employee : BaseEntity
     public string? Phone { get; set; }
 
     public DateOnly JoinDate { get; set; }
+    public DateOnly? ResignationDate { get; set; }
 
     public int DepartmentId { get; set; }
     public Department? Department { get; set; }
@@ -23,5 +24,14 @@ public sealed class Employee : BaseEntity
 
     public string? NidNumber { get; set; }
     public string? TinNumber { get; set; }
-}
 
+    public string? PhotoPath { get; set; }
+    public string? SignaturePath { get; set; }
+
+    public string? BankName { get; set; }
+    public string? BankAccountNumber { get; set; }
+    public string? MobileBankingProvider { get; set; }
+    public string? MobileBankingNumber { get; set; }
+
+    public List<EmployeeDocument> Documents { get; set; } = [];
+}

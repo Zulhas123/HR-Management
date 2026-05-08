@@ -1,0 +1,44 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.EmployeePromotion>
+
+@{
+    var employee = (HrSystem.Domain.Entities.Employee)ViewData["Employee"]!;
+    ViewData["Title"] = "Promotions";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-0">Promotions</h1>
+        <div class="text-muted">@employee.EmployeeCode - @employee.FirstName @employee.LastName</div>
+    </div>
+    <a class="btn btn-primary" asp-action="Create" asp-route-employeeId="@employee.Id">Add</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Effective</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Note</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.EffectiveDate</td>
+                <td>@p.FromDesignation?.Name</td>
+                <td>@p.ToDesignation?.Name</td>
+                <td>@p.Note</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@p.Id">Edit</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@p.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Back</a>
+

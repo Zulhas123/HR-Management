@@ -41,7 +41,7 @@ public sealed class EmployeesController(
             return View(vm);
         }
 
-        await employees.CreateAsync(new Employee
+        var created = await employees.CreateAsync(new Employee
         {
             EmployeeCode = "PENDING",
             FirstName = vm.FirstName,
@@ -49,12 +49,19 @@ public sealed class EmployeesController(
             Email = vm.Email,
             Phone = vm.Phone,
             JoinDate = DateOnly.FromDateTime(vm.JoinDate),
+            ResignationDate = vm.ResignationDate is null ? null : DateOnly.FromDateTime(vm.ResignationDate.Value),
             DepartmentId = vm.DepartmentId,
             DesignationId = vm.DesignationId,
             EmploymentTypeId = vm.EmploymentTypeId,
             NidNumber = vm.NidNumber,
             TinNumber = vm.TinNumber,
+            BankName = vm.BankName,
+            BankAccountNumber = vm.BankAccountNumber,
+            MobileBankingProvider = vm.MobileBankingProvider,
+            MobileBankingNumber = vm.MobileBankingNumber,
         }, cancellationToken);
+
+        await SaveEmployeeFilesAsync(created, vm.PhotoFile, vm.SignatureFile, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -75,11 +82,16 @@ public sealed class EmployeesController(
             Email = entity.Email,
             Phone = entity.Phone,
             JoinDate = entity.JoinDate.ToDateTime(TimeOnly.MinValue),
+            ResignationDate = entity.ResignationDate?.ToDateTime(TimeOnly.MinValue),
             DepartmentId = entity.DepartmentId,
             DesignationId = entity.DesignationId,
             EmploymentTypeId = entity.EmploymentTypeId,
             NidNumber = entity.NidNumber,
             TinNumber = entity.TinNumber,
+            BankName = entity.BankName,
+            BankAccountNumber = entity.BankAccountNumber,
+            MobileBankingProvider = entity.MobileBankingProvider,
+            MobileBankingNumber = entity.MobileBankingNumber,
         };
 
         await PopulateLookupsAsync(vm, cancellationToken);
@@ -112,13 +124,20 @@ public sealed class EmployeesController(
         entity.Email = vm.Email;
         entity.Phone = vm.Phone;
         entity.JoinDate = DateOnly.FromDateTime(vm.JoinDate);
+        entity.ResignationDate = vm.ResignationDate is null ? null : DateOnly.FromDateTime(vm.ResignationDate.Value);
         entity.DepartmentId = vm.DepartmentId;
         entity.DesignationId = vm.DesignationId;
         entity.EmploymentTypeId = vm.EmploymentTypeId;
         entity.NidNumber = vm.NidNumber;
         entity.TinNumber = vm.TinNumber;
+        entity.BankName = vm.BankName;
+        entity.BankAccountNumber = vm.BankAccountNumber;
+        entity.MobileBankingProvider = vm.MobileBankingProvider;
+        entity.MobileBankingNumber = vm.MobileBankingNumber;
 
         await employees.UpdateAsync(entity, cancellationToken);
+
+        await SaveEmployeeFilesAsync(entity, vm.PhotoFile, vm.SignatureFile, cancellationToken);
         return RedirectToAction(nameof(Index));
     }
 
@@ -150,5 +169,39 @@ public sealed class EmployeesController(
             .Select(e => new SelectListItem(e.Name, e.Id.ToString()))
             .ToList();
     }
-}
 
+    private async Task SaveEmployeeFilesAsync(Employee employee, IFormFile? photo, IFormFile? signature, CancellationToken cancellationToken)
+    {
+        var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "employees", employee.Id.ToString());
+        Directory.CreateDirectory(uploadsRoot);
+
+        var changed = false;
+
+        if (photo is not null && photo.Length > 0)
+        {
+            var ext = Path.GetExtension(photo.FileName);
+            var fileName = $"photo{ext}";
+            var fullPath = Path.Combine(uploadsRoot, fileName);
+            await using var fs = new FileStream(fullPath, FileMode.Create);
+            await photo.CopyToAsync(fs, cancellationToken);
+            employee.PhotoPath = $"/uploads/employees/{employee.Id}/{fileName}";
+            changed = true;
+        }
+
+        if (signature is not null && signature.Length > 0)
+        {
+            var ext = Path.GetExtension(signature.FileName);
+            var fileName = $"signature{ext}";
+            var fullPath = Path.Combine(uploadsRoot, fileName);
+            await using var fs = new FileStream(fullPath, FileMode.Create);
+            await signature.CopyToAsync(fs, cancellationToken);
+            employee.SignaturePath = $"/uploads/employees/{employee.Id}/{fileName}";
+            changed = true;
+        }
+
+        if (changed)
+        {
+            await employees.UpdateAsync(employee, cancellationToken);
+        }
+    }
+}

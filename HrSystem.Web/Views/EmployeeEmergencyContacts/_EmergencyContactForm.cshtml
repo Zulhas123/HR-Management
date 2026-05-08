@@ -1,0 +1,39 @@
+@model HrSystem.Web.ViewModels.EmployeeEmergencyContactFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Relationship" class="form-label"></label>
+            <input asp-for="Relationship" class="form-control" />
+            <span asp-validation-for="Relationship" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label"></label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="IsPrimary" class="form-check-input" />
+            <label asp-for="IsPrimary" class="form-check-label">Primary</label>
+        </div>
+    </div>
+</div>
+

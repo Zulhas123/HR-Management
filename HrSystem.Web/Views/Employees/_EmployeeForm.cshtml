@@ -71,5 +71,51 @@
             <span asp-validation-for="TinNumber" class="text-danger"></span>
         </div>
     </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ResignationDate" class="form-label">Resignation Date</label>
+            <input asp-for="ResignationDate" class="form-control" />
+            <span asp-validation-for="ResignationDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="BankName" class="form-label">Bank Name</label>
+            <input asp-for="BankName" class="form-control" />
+            <span asp-validation-for="BankName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="BankAccountNumber" class="form-label">Bank Account Number</label>
+            <input asp-for="BankAccountNumber" class="form-control" />
+            <span asp-validation-for="BankAccountNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="MobileBankingProvider" class="form-label">Mobile Banking Provider</label>
+            <input asp-for="MobileBankingProvider" class="form-control" placeholder="bKash/Nagad/Rocket..." />
+            <span asp-validation-for="MobileBankingProvider" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="MobileBankingNumber" class="form-label">Mobile Banking Number</label>
+            <input asp-for="MobileBankingNumber" class="form-control" />
+            <span asp-validation-for="MobileBankingNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="PhotoFile" class="form-label">Photo</label>
+            <input asp-for="PhotoFile" class="form-control" type="file" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="SignatureFile" class="form-label">Signature</label>
+            <input asp-for="SignatureFile" class="form-control" type="file" />
+        </div>
+    </div>
 </div>
-

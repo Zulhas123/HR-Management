@@ -1,0 +1,23 @@
+@model HrSystem.Domain.Entities.EmployeeDocument
+
+@{
+    ViewData["Title"] = "Delete Document";
+}
+
+<h1 class="h3">Delete Document</h1>
+<p class="text-muted">This action cannot be undone.</p>
+
+<dl class="row">
+    <dt class="col-sm-2">Name</dt>
+    <dd class="col-sm-10">@Model.DocumentName</dd>
+    <dt class="col-sm-2">File</dt>
+    <dd class="col-sm-10"><a href="@Model.StoredPath" target="_blank">Open</a></dd>
+</dl>
+
+<form asp-action="DeleteConfirmed" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" asp-route-employeeId="@Model.EmployeeId" class="btn btn-secondary">Cancel</a>
+</form>
+

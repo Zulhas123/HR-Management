@@ -26,3 +26,5 @@ appsettings.*.local.json
 .env
 .env.*
 
+## Uploaded files
+HrSystem.Web/wwwroot/uploads/
