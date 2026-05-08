@@ -1,0 +1,91 @@
+@using System
+@using System.Linq
+
+@{
+    var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).Trim();
+    string Active(params string[] controllers) => controllers.Contains(controller, StringComparer.OrdinalIgnoreCase) ? "active" : string.Empty;
+}
+
+<nav class="app-nav">
+    <div class="app-nav-section">Main</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item">
+            <a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
+        </li>
+    </ul>
+
+    <div class="app-nav-section">Employees</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item">
+            <a class="nav-link @Active("Employees")" asp-controller="Employees" asp-action="Index">Employees</a>
+        </li>
+    </ul>
+
+    <div class="app-nav-section">Attendance</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item">
+            <a class="nav-link @Active("Attendance")" asp-controller="Attendance" asp-action="Index">Attendance</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @Active("Shifts")" asp-controller="Shifts" asp-action="Index">Shifts</a>
+        </li>
+    </ul>
+
+    <div class="app-nav-section">Leave</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("LeaveRequests")" asp-controller="LeaveRequests" asp-action="Index">Leave Requests</a></li>
+        <li class="nav-item"><a class="nav-link @Active("LeaveTypes")" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a></li>
+        <li class="nav-item"><a class="nav-link @Active("LeaveBalances")" asp-controller="LeaveBalances" asp-action="Index">Leave Balances</a></li>
+        <li class="nav-item"><a class="nav-link @Active("LeaveEncashments")" asp-controller="LeaveEncashments" asp-action="Index">Encashments</a></li>
+        <li class="nav-item"><a class="nav-link @Active("Holidays")" asp-controller="Holidays" asp-action="Index">Holidays</a></li>
+        <li class="nav-item"><a class="nav-link @Active("WeekendConfiguration")" asp-controller="WeekendConfiguration" asp-action="Index">Weekend Config</a></li>
+    </ul>
+
+    <div class="app-nav-section">Recruitment</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("JobPostings")" asp-controller="JobPostings" asp-action="Index">Job Postings</a></li>
+        <li class="nav-item"><a class="nav-link @Active("Candidates")" asp-controller="Candidates" asp-action="Index">Candidates</a></li>
+        <li class="nav-item"><a class="nav-link @Active("JobApplications")" asp-controller="JobApplications" asp-action="Index">Applications</a></li>
+        <li class="nav-item"><a class="nav-link @Active("Interviews")" asp-controller="Interviews" asp-action="Index">Interviews</a></li>
+    </ul>
+
+    <div class="app-nav-section">Workforce</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("EmployeeTasks")" asp-controller="EmployeeTasks" asp-action="Index">Tasks</a></li>
+        <li class="nav-item"><a class="nav-link @Active("DailyWorkLogs")" asp-controller="DailyWorkLogs" asp-action="Index">Daily Logs</a></li>
+        <li class="nav-item"><a class="nav-link @Active("ProductivityReports")" asp-controller="ProductivityReports" asp-action="Index">Reports</a></li>
+    </ul>
+
+    <div class="app-nav-section">Overtime</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("OvertimeRequests")" asp-controller="OvertimeRequests" asp-action="Index">Requests</a></li>
+    </ul>
+
+    <div class="app-nav-section">Onboarding</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("Onboardings")" asp-controller="Onboardings" asp-action="Index">Onboardings</a></li>
+        <li class="nav-item"><a class="nav-link @Active("EmployeeAssets")" asp-controller="EmployeeAssets" asp-action="Index">Asset Assignments</a></li>
+        <li class="nav-item"><a class="nav-link @Active("EmployeeHandbooks")" asp-controller="EmployeeHandbooks" asp-action="Index">Handbooks</a></li>
+    </ul>
+
+    <div class="app-nav-section">Offboarding</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("Offboardings")" asp-controller="Offboardings" asp-action="Index">Offboardings</a></li>
+    </ul>
+
+    <div class="app-nav-section">Master Data</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2">
+        <li class="nav-item"><a class="nav-link @Active("Departments")" asp-controller="Departments" asp-action="Index">Departments</a></li>
+        <li class="nav-item"><a class="nav-link @Active("Designations")" asp-controller="Designations" asp-action="Index">Designations</a></li>
+        <li class="nav-item"><a class="nav-link @Active("EmploymentTypes")" asp-controller="EmploymentTypes" asp-action="Index">Employment Types</a></li>
+        <li class="nav-item"><a class="nav-link @Active("Religions")" asp-controller="Religions" asp-action="Index">Religions</a></li>
+        <li class="nav-item"><a class="nav-link @Active("BloodGroups")" asp-controller="BloodGroups" asp-action="Index">Blood Groups</a></li>
+    </ul>
+
+    <div class="app-nav-section">System</div>
+    <ul class="nav nav-pills flex-column gap-1 px-2 pb-3">
+        <li class="nav-item">
+            <a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </li>
+    </ul>
+</nav>

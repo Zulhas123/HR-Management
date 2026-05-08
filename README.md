@@ -6,7 +6,7 @@ Bangladesh-focused HRMS with a minimal, maintainable implementation:
 - Clean Architecture layering: `Domain` / `Application` / `Infrastructure` / `Web`
 - Repository pattern + DI
 - EF Core (code-first) + SQL Server
-- JWT authentication + RBAC (roles/permissions)
+- Login (Cookie) + JWT (API) + RBAC (roles/permissions)
 - Docker Compose for local SQL Server + app
 
 ## Architecture
@@ -18,10 +18,12 @@ Bangladesh-focused HRMS with a minimal, maintainable implementation:
 
 ## Folder Structure (Feature-Oriented)
 
-- `HrSystem.Domain/Entities/<Feature>/...`: Feature-grouped entities (Attendance, Leave, Recruitment, Onboarding, Offboarding, Workforce, PayrollIntegration, Overtime, Security, MasterData)
-- `HrSystem.Domain/Repositories/<Feature>/...`: Feature-grouped repository abstractions
+- `HrSystem.Domain/Features/<Feature>/Entities/...`: Feature-grouped entities (Attendance, Leave, Recruitment, Onboarding, Offboarding, Workforce, PayrollIntegration, Overtime, Security, MasterData)
+- `HrSystem.Domain/Features/<Feature>/Repositories/...`: Feature-grouped repository abstractions
+- `HrSystem.Domain/Common/Repositories/...`: Cross-cutting repository base contracts
 - `HrSystem.Application/Features/<Feature>/...`: Feature-grouped services/DTOs/abstractions
-- `HrSystem.Infrastructure/Repositories/<Feature>/...`: Feature-grouped repository implementations
+- `HrSystem.Infrastructure/Features/<Feature>/Repositories/...`: Feature-grouped repository implementations
+- `HrSystem.Infrastructure/Common/Repositories/...`: Base repository implementation
 - `HrSystem.Web/Features/<Feature>/...`: Feature-grouped MVC + API controllers and view-models
 - `HrSystem.Web/Views/<ControllerName>/...`: MVC views (standard ASP.NET Core conventions)
 
@@ -49,6 +51,7 @@ Bangladesh-focused HRMS with a minimal, maintainable implementation:
 - Connection string: `HrSystem.Web/appsettings.json` -> `ConnectionStrings:DefaultConnection`
 - JWT: `HrSystem.Web/appsettings.json` -> `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Key`
 - Seeded Super Admin user (Development): `HrSystem.Web/appsettings.json` -> `Admin:Username`, `Admin:Password`
+- Dashboard refresh + policy reminders: `HrSystem.Web/appsettings.json` -> `Dashboard`
 
 Important: change `Jwt:Key` before using in real environments.
 
@@ -58,6 +61,13 @@ Important: change `Jwt:Key` before using in real environments.
 2. Run:
    - `dotnet run --project HrSystem.Web`
 3. In Development, the database is created automatically via `EnsureCreated()` and seeded (master data + OT policy + RBAC roles/permissions + Super Admin user).
+
+When you open the app in the browser, you are redirected to the login form first:
+
+- URL: `/Account/Login`
+- Default (Development seed): `admin / admin123`
+
+After login, you land on the dashboard (`/`) which shows feature modules + live KPIs.
 
 Note: `EnsureCreated()` does not update an existing database schema. If you pulled new code with model changes, drop/recreate your local database (or switch to EF Core migrations) before running.
 
@@ -75,6 +85,8 @@ Uploads are stored under `HrSystem.Web/wwwroot/uploads/` (git-ignored).
    - Body: `{ "username": "admin", "password": "admin123" }` (Development default)
 2. Use:
    - `Authorization: Bearer <token>`
+
+The UI uses Cookie authentication (form login), while APIs can be called using either Cookie (browser session) or JWT bearer tokens.
 
 ## Key API Endpoints
 

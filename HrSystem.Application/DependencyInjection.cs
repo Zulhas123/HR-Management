@@ -1,4 +1,6 @@
 using HrSystem.Application.Abstractions;
+using HrSystem.Application.Features.Common.Abstractions;
+using HrSystem.Application.Features.Common.Services;
 using HrSystem.Application.Services;
 using HrSystem.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IWorkforceReportingService, WorkforceReportingService>();
         services.AddScoped<IOvertimeService, OvertimeService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IDashboardService, DashboardService>();
 
         // Convenience typed registrations for common lookups
         services.AddScoped<ICrudService<Department>, CrudService<Department>>();

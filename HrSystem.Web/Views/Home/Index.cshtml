@@ -1,8 +1,226 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model HrSystem.Web.ViewModels.DashboardVm
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex flex-wrap align-items-end justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Dashboard</h1>
+        <div class="text-muted small">
+            Live data for @Model.Summary.Today
+            <span class="ms-2" id="metricUpdatedAt">Updated: @Model.Summary.GeneratedAtUtc.UtcDateTime.ToString("u")</span>
+        </div>
+    </div>
 </div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-8">
+        <div class="row g-3">
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Employees</div>
+                        <div class="display-6 fw-semibold" id="metricTotalEmployees">@Model.Summary.TotalEmployees</div>
+                        <a class="stretched-link" asp-controller="Employees" asp-action="Index"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Attendance Today</div>
+                        <div class="display-6 fw-semibold" id="metricAttendanceToday">@Model.Summary.AttendanceToday</div>
+                        <a class="stretched-link" asp-controller="Attendance" asp-action="Index"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Pending Leave</div>
+                        <div class="display-6 fw-semibold" id="metricPendingLeaveRequests">@Model.Summary.PendingLeaveRequests</div>
+                        <a class="stretched-link" asp-controller="LeaveRequests" asp-action="Index"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Pending Overtime</div>
+                        <div class="display-6 fw-semibold" id="metricPendingOvertimeRequests">@Model.Summary.PendingOvertimeRequests</div>
+                        <a class="stretched-link" asp-controller="OvertimeRequests" asp-action="Index"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Open Job Postings</div>
+                        <div class="display-6 fw-semibold" id="metricOpenJobPostings">@Model.Summary.OpenJobPostings</div>
+                        <a class="stretched-link" asp-controller="JobPostings" asp-action="Index"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <div class="h6 mb-0">Modules</div>
+                        <div class="text-muted small">Quick access to all features</div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Employees</div>
+                            <div class="text-muted small">Profiles, documents, transfers, promotions</div>
+                            <div class="mt-2"><a asp-controller="Employees" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Attendance</div>
+                            <div class="text-muted small">Daily attendance, shifts, processing</div>
+                            <div class="mt-2"><a asp-controller="Attendance" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Leave</div>
+                            <div class="text-muted small">Requests, balances, holidays, weekends</div>
+                            <div class="mt-2"><a asp-controller="LeaveRequests" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Recruitment</div>
+                            <div class="text-muted small">Job postings, candidates, interviews</div>
+                            <div class="mt-2"><a asp-controller="JobPostings" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Workforce</div>
+                            <div class="text-muted small">Tasks, work logs, productivity</div>
+                            <div class="mt-2"><a asp-controller="EmployeeTasks" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Overtime</div>
+                            <div class="text-muted small">Requests & approvals</div>
+                            <div class="mt-2"><a asp-controller="OvertimeRequests" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Onboarding</div>
+                            <div class="text-muted small">Joining, assets, handbooks</div>
+                            <div class="mt-2"><a asp-controller="Onboardings" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Offboarding</div>
+                            <div class="text-muted small">Exit, clearance, settlement</div>
+                            <div class="mt-2"><a asp-controller="Offboardings" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="border rounded-3 p-3 h-100 bg-white">
+                            <div class="fw-semibold">Master Data</div>
+                            <div class="text-muted small">Departments, designations, lookups</div>
+                            <div class="mt-2"><a asp-controller="Departments" asp-action="Index">Open</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="h6">Important Policies</div>
+                <div class="text-muted small mb-2">Quick reminders for daily operations</div>
+
+                @if (Model.ImportantPolicies.Count == 0)
+                {
+                    <div class="text-muted small">No policies configured.</div>
+                }
+                else
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var p in Model.ImportantPolicies)
+                        {
+                            <div class="list-group-item px-0">
+                                <div class="fw-semibold">@p.Title</div>
+                                <div class="text-muted small">@p.Body</div>
+                                @if (!string.IsNullOrWhiteSpace(p.Url))
+                                {
+                                    <div class="mt-1"><a href="@p.Url">Open</a></div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <div class="h6">Policy Snapshot</div>
+                <div class="text-muted small mb-2">Live configuration from the database</div>
+
+                <div class="mb-3">
+                    <div class="fw-semibold">Overtime</div>
+                    @if (Model.OvertimePolicy is null)
+                    {
+                        <div class="text-muted small">No overtime policy found.</div>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">Effective: @Model.OvertimePolicy.EffectiveFrom</div>
+                        <div class="small mt-1">Normal: <span class="fw-semibold">@Model.OvertimePolicy.NormalMultiplier</span>x</div>
+                        <div class="small">Holiday: <span class="fw-semibold">@Model.OvertimePolicy.HolidayMultiplier</span>x</div>
+                        <div class="small">Approval levels: <span class="fw-semibold">@Model.OvertimePolicy.ApprovalLevelsRequired</span></div>
+                    }
+                </div>
+
+                <div>
+                    <div class="fw-semibold">Weekend</div>
+                    @if (Model.WeekendConfig is null)
+                    {
+                        <div class="text-muted small">No weekend configuration found.</div>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">
+                            Sun: @(Model.WeekendConfig.Sunday ? "Off" : "Work"),
+                            Mon: @(Model.WeekendConfig.Monday ? "Off" : "Work"),
+                            Tue: @(Model.WeekendConfig.Tuesday ? "Off" : "Work"),
+                            Wed: @(Model.WeekendConfig.Wednesday ? "Off" : "Work"),
+                            Thu: @(Model.WeekendConfig.Thursday ? "Off" : "Work"),
+                            Fri: @(Model.WeekendConfig.Friday ? "Off" : "Work"),
+                            Sat: @(Model.WeekendConfig.Saturday ? "Off" : "Work")
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    <script>
+        window.hrDashboard = window.hrDashboard || {};
+        window.hrDashboard.refreshSeconds = @Model.RefreshSeconds;
+    </script>
+}
+

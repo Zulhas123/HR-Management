@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,6 +10,7 @@ namespace HrSystem.Web.Controllers.Api;
 
 [ApiController]
 [Route("api/auth")]
+[AllowAnonymous]
 public sealed class AuthController(IConfiguration configuration, IAuthService auth) : ControllerBase
 {
     public sealed record TokenRequest(string Username, string Password);

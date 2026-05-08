@@ -9,112 +9,56 @@
     <link rel="stylesheet" href="~/HrSystem.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HR System</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Attendance" asp-action="Index">Attendance</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Leave
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="LeaveRequests" asp-action="Index">Leave Requests</a></li>
-                                <li><a class="dropdown-item" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a></li>
-                                <li><a class="dropdown-item" asp-controller="LeaveBalances" asp-action="Index">Leave Balances</a></li>
-                                <li><a class="dropdown-item" asp-controller="LeaveEncashments" asp-action="Index">Leave Encashments</a></li>
-                                <li><a class="dropdown-item" asp-controller="Holidays" asp-action="Index">Holidays</a></li>
-                                <li><a class="dropdown-item" asp-controller="WeekendConfiguration" asp-action="Index">Weekend Configuration</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Recruitment
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="JobPostings" asp-action="Index">Job Postings</a></li>
-                                <li><a class="dropdown-item" asp-controller="Candidates" asp-action="Index">Candidates</a></li>
-                                <li><a class="dropdown-item" asp-controller="JobApplications" asp-action="Index">Applications</a></li>
-                                <li><a class="dropdown-item" asp-controller="Interviews" asp-action="Index">Interviews</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Workforce
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="EmployeeTasks" asp-action="Index">Employee Tasks</a></li>
-                                <li><a class="dropdown-item" asp-controller="DailyWorkLogs" asp-action="Index">Daily Work Logs</a></li>
-                                <li><a class="dropdown-item" asp-controller="ProductivityReports" asp-action="Index">Productivity Report</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="OvertimeRequests" asp-action="Index">Overtime</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Onboarding
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Onboardings" asp-action="Index">Onboardings</a></li>
-                                <li><a class="dropdown-item" asp-controller="EmployeeAssets" asp-action="Index">Asset Assignments</a></li>
-                                <li><a class="dropdown-item" asp-controller="EmployeeHandbooks" asp-action="Index">Employee Handbooks</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Offboarding
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Offboardings" asp-action="Index">Offboardings</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Master Data
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Departments" asp-action="Index">Departments</a></li>
-                                <li><a class="dropdown-item" asp-controller="Designations" asp-action="Index">Designations</a></li>
-                                <li><a class="dropdown-item" asp-controller="EmploymentTypes" asp-action="Index">Employment Types</a></li>
-                                <li><a class="dropdown-item" asp-controller="Shifts" asp-action="Index">Shifts</a></li>
-                                <li><a class="dropdown-item" asp-controller="Religions" asp-action="Index">Religions</a></li>
-                                <li><a class="dropdown-item" asp-controller="BloodGroups" asp-action="Index">Blood Groups</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <div class="app-shell">
+        <header class="app-topbar navbar navbar-dark bg-primary px-3">
+            <button class="btn btn-sm btn-outline-light me-2 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Toggle sidebar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">HR System</a>
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <span class="text-white-50 small d-none d-sm-inline">@ViewData["Title"]</span>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @(User.FindFirst("display_name")?.Value ?? User.Identity?.Name ?? "User")
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="px-3 py-2">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        </header>
+
+        <div class="app-body">
+            <aside class="app-sidebar d-none d-md-block">
+                @await Html.PartialAsync("_SidebarNav")
+            </aside>
+
+            <div class="offcanvas offcanvas-start app-sidebar-offcanvas" tabindex="-1" id="appSidebar" aria-labelledby="appSidebarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="appSidebarLabel">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    @await Html.PartialAsync("_SidebarNav")
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - HrSystem.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <main role="main" class="app-content">
+                @RenderBody()
+                <footer class="app-footer text-muted small mt-4 pt-3 border-top">
+                    &copy; 2026 - HR System - <a class="link-secondary" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </footer>
+            </main>
         </div>
-    </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
