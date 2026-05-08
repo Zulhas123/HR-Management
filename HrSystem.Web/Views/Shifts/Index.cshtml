@@ -16,6 +16,7 @@
             <th>Start</th>
             <th>End</th>
             <th>Overnight</th>
+            <th>Flexible</th>
             <th class="text-end">Actions</th>
         </tr>
     </thead>
@@ -27,6 +28,7 @@
                 <td>@s.StartTime</td>
                 <td>@s.EndTime</td>
                 <td>@(s.IsOvernight ? "Yes" : "No")</td>
+                <td>@(s.IsFlexibleHours ? $"{s.FlexInStartTime}-{s.FlexInEndTime} (grace {s.GraceMinutes}m)" : "No")</td>
                 <td class="text-end">
                     <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@s.Id">Edit</a>
                     <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@s.Id">Delete</a>
@@ -35,4 +37,3 @@
         }
     </tbody>
 </table>
-

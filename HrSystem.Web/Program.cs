@@ -87,6 +87,29 @@ if (app.Environment.IsDevelopment())
         });
     }
 
+    if (!await db.Religions.AnyAsync())
+    {
+        db.Religions.AddRange(
+            new HrSystem.Domain.Entities.Religion { Name = "Islam" },
+            new HrSystem.Domain.Entities.Religion { Name = "Hinduism" },
+            new HrSystem.Domain.Entities.Religion { Name = "Christianity" },
+            new HrSystem.Domain.Entities.Religion { Name = "Buddhism" },
+            new HrSystem.Domain.Entities.Religion { Name = "Other" });
+    }
+
+    if (!await db.BloodGroups.AnyAsync())
+    {
+        db.BloodGroups.AddRange(
+            new HrSystem.Domain.Entities.BloodGroup { Name = "A+" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "A-" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "B+" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "B-" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "AB+" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "AB-" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "O+" },
+            new HrSystem.Domain.Entities.BloodGroup { Name = "O-" });
+    }
+
     await db.SaveChangesAsync();
 }
 

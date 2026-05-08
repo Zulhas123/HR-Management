@@ -24,6 +24,8 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
     public DbSet<Candidate> Candidates => Set<Candidate>();
     public DbSet<JobApplication> JobApplications => Set<JobApplication>();
     public DbSet<Interview> Interviews => Set<Interview>();
+    public DbSet<Religion> Religions => Set<Religion>();
+    public DbSet<BloodGroup> BloodGroups => Set<BloodGroup>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,14 +56,25 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
             b.Property(x => x.Phone).HasMaxLength(50);
             b.Property(x => x.NidNumber).HasMaxLength(50);
             b.Property(x => x.TinNumber).HasMaxLength(50);
+            b.Property(x => x.PassportNumber).HasMaxLength(50);
+            b.Property(x => x.PresentAddress).HasMaxLength(500);
+            b.Property(x => x.PermanentAddress).HasMaxLength(500);
+            b.Property(x => x.BanglaFirstName).HasMaxLength(100);
+            b.Property(x => x.BanglaLastName).HasMaxLength(100);
             b.Property(x => x.PhotoPath).HasMaxLength(500);
             b.Property(x => x.SignaturePath).HasMaxLength(500);
             b.Property(x => x.BankName).HasMaxLength(200);
             b.Property(x => x.BankAccountNumber).HasMaxLength(100);
             b.Property(x => x.MobileBankingProvider).HasMaxLength(100);
             b.Property(x => x.MobileBankingNumber).HasMaxLength(50);
+            b.Property(x => x.BiometricUserId).HasMaxLength(100);
+            b.Property(x => x.FaceProfileId).HasMaxLength(100);
+            b.Property(x => x.RfidCardId).HasMaxLength(100);
 
             b.HasIndex(x => x.EmployeeCode).IsUnique();
+            b.HasIndex(x => x.BiometricUserId);
+            b.HasIndex(x => x.FaceProfileId);
+            b.HasIndex(x => x.RfidCardId);
 
             b.HasOne(x => x.Department)
                 .WithMany()
@@ -77,6 +90,16 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
                 .WithMany()
                 .HasForeignKey(x => x.EmploymentTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.Religion)
+                .WithMany()
+                .HasForeignKey(x => x.ReligionId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            b.HasOne(x => x.BloodGroup)
+                .WithMany()
+                .HasForeignKey(x => x.BloodGroupId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<EmployeeDocument>(b =>
@@ -198,13 +221,23 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
         {
             b.Property(x => x.Name).HasMaxLength(100).IsRequired();
             b.HasIndex(x => x.Name).IsUnique();
+            b.Property(x => x.GraceMinutes).HasDefaultValue(0);
         });
 
         modelBuilder.Entity<AttendanceRecord>(b =>
         {
             b.Property(x => x.Notes).HasMaxLength(500);
+            b.Property(x => x.DeviceId).HasMaxLength(100);
+            b.Property(x => x.DeviceUserId).HasMaxLength(100);
+            b.Property(x => x.RfidCardId).HasMaxLength(100);
+            b.Property(x => x.MobileDeviceId).HasMaxLength(200);
+            b.Property(x => x.CapturedBy).HasMaxLength(200);
+            b.Property(x => x.Latitude).HasColumnType("decimal(9,6)");
+            b.Property(x => x.Longitude).HasColumnType("decimal(9,6)");
 
             b.HasIndex(x => new { x.EmployeeId, x.Date }).IsUnique();
+            b.HasIndex(x => x.Source);
+            b.HasIndex(x => x.MissingPunchStatus);
 
             b.HasOne(x => x.Employee)
                 .WithMany()
@@ -291,6 +324,18 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
                 .WithMany()
                 .HasForeignKey(x => x.JobApplicationId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Religion>(b =>
+        {
+            b.Property(x => x.Name).HasMaxLength(100).IsRequired();
+            b.HasIndex(x => x.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<BloodGroup>(b =>
+        {
+            b.Property(x => x.Name).HasMaxLength(10).IsRequired();
+            b.HasIndex(x => x.Name).IsUnique();
         });
     }
 }

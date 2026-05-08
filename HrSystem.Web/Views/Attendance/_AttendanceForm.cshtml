@@ -1,4 +1,5 @@
 @model HrSystem.Web.ViewModels.AttendanceRecordFormVm
+@using HrSystem.Domain.Entities
 
 <div class="row g-3">
     <div class="col-md-6">
@@ -35,6 +36,64 @@
             <input asp-for="CheckOutTime" class="form-control" />
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Source" class="form-label">Source</label>
+            <select asp-for="Source" asp-items="Html.GetEnumSelectList<AttendanceSource>()" class="form-select"></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="DeviceVendor" class="form-label">Device vendor</label>
+            <select asp-for="DeviceVendor" asp-items="Html.GetEnumSelectList<AttendanceDeviceVendor>()" class="form-select"></select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="DeviceId" class="form-label">Device ID</label>
+            <input asp-for="DeviceId" class="form-control" />
+            <span asp-validation-for="DeviceId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="DeviceUserId" class="form-label">Device user ID</label>
+            <input asp-for="DeviceUserId" class="form-control" />
+            <span asp-validation-for="DeviceUserId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="RfidCardId" class="form-label">RFID card ID</label>
+            <input asp-for="RfidCardId" class="form-control" />
+            <span asp-validation-for="RfidCardId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="MobileDeviceId" class="form-label">Mobile device ID</label>
+            <input asp-for="MobileDeviceId" class="form-control" />
+            <span asp-validation-for="MobileDeviceId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Latitude" class="form-label"></label>
+            <input asp-for="Latitude" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Longitude" class="form-label"></label>
+            <input asp-for="Longitude" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="LocationAccuracyMeters" class="form-label">Accuracy (m)</label>
+            <input asp-for="LocationAccuracyMeters" class="form-control" />
+        </div>
+    </div>
     <div class="col-md-6">
         <div class="mb-3">
             <label asp-for="Notes" class="form-label"></label>
@@ -43,4 +102,3 @@
         </div>
     </div>
 </div>
-

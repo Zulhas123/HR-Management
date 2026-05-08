@@ -28,11 +28,23 @@ Core HR - Employee Management:
 - Emergency contacts + family members (per employee)
 - REST API: Employee CRUD (JWT protected)
 
+Bangladesh-specific employee fields (partial):
+
+- NID, TIN, Passport number
+- Present address and permanent address
+- Religion and blood group (master data)
+- Festival eligibility flag
+- Bangla name fields (Bangla/English profile support)
+
 Attendance (MVP):
 
 - Shifts (MVC CRUD)
-- Manual attendance records (employee + date + check-in/out + optional shift)
+- Flexible office hours settings on shifts (flex window + grace + required minutes)
+- Attendance records with source metadata (manual/biometric/face/RFID/GPS) + optional device/location fields
+- Late entry calculation + early exit tracking + missing punch status (derived metrics)
+- Auto attendance processing endpoint (`POST /api/attendance/process`) for batch recompute (JWT protected)
 - REST API: Shifts + Attendance CRUD (JWT protected)
+- REST API: Attendance punch endpoint (`POST /api/attendance/punch`) for biometric/face/RFID/GPS integrations (JWT protected)
 
 Leave Management (MVP):
 
@@ -65,6 +77,8 @@ Important: change `Jwt:Key` before using in real environments.
    - `dotnet run --project HrSystem.Web`
 3. In Development, the database is created automatically via `EnsureCreated()` and seeded with basic master data.
 
+Note: `EnsureCreated()` does not update an existing database schema. If you pulled new code with model changes, drop/recreate your local database (or switch to EF Core migrations) before running.
+
 Uploaded files (photos/signatures/documents) are stored under `HrSystem.Web/wwwroot/uploads/` and are ignored by git (`.gitignore`).
 
 ## Run (Docker Compose)
@@ -85,9 +99,19 @@ Uploaded files (photos/signatures/documents) are stored under `HrSystem.Web/wwwr
 Endpoints:
 
 - Employees: `GET/POST /api/employees`, `GET/PUT/DELETE /api/employees/{id}`
-- Attendance: `GET/POST /api/attendance`, `GET/POST /api/shifts`
+- Attendance: `GET/POST /api/attendance`, `POST /api/attendance/punch`, `POST /api/attendance/process`, `GET/POST /api/shifts`
 - Leave: `GET/POST /api/leave-types`, `GET/POST /api/leave-requests`, `POST /api/leave-requests/{id}/approve`, `POST /api/leave-requests/{id}/reject`
 - Recruitment: `GET/POST /api/job-postings`, `GET/POST /api/candidates`, `GET/POST /api/job-applications`, `GET/POST /api/interviews`
+
+Attendance punch notes:
+
+- `POST /api/attendance/punch` accepts `employeeId` or one of `biometricUserId` / `faceProfileId` / `rfidCardId`.
+- `source` enum: Manual=0, Biometric=1, FaceRecognition=2, Rfid=3, GpsMobile=4
+- `deviceVendor` enum: Unknown=0, ZkTeco=1, ESSL=2, Hikvision=3
+
+Attendance processing notes:
+
+- `POST /api/attendance/process` recomputes missing punch + late/early/worked metrics for a date range.
 
 ## Next Features (Planned)
 
@@ -96,4 +120,3 @@ From the provided documentation, the next modules include:
 - Employee self-service (ESS)
 - Reporting
 - Onboarding/offboarding, performance, payroll integration, and more
-

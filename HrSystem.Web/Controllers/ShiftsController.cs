@@ -29,7 +29,12 @@ public sealed class ShiftsController(ICrudService<Shift> shifts) : Controller
             Name = vm.Name,
             StartTime = vm.StartTime,
             EndTime = vm.EndTime,
-            IsOvernight = vm.IsOvernight
+            IsOvernight = vm.IsOvernight,
+            IsFlexibleHours = vm.IsFlexibleHours,
+            FlexInStartTime = vm.FlexInStartTime,
+            FlexInEndTime = vm.FlexInEndTime,
+            GraceMinutes = vm.GraceMinutes,
+            RequiredWorkMinutes = vm.RequiredWorkMinutes
         }, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -49,7 +54,12 @@ public sealed class ShiftsController(ICrudService<Shift> shifts) : Controller
             Name = entity.Name,
             StartTime = entity.StartTime,
             EndTime = entity.EndTime,
-            IsOvernight = entity.IsOvernight
+            IsOvernight = entity.IsOvernight,
+            IsFlexibleHours = entity.IsFlexibleHours,
+            FlexInStartTime = entity.FlexInStartTime,
+            FlexInEndTime = entity.FlexInEndTime,
+            GraceMinutes = entity.GraceMinutes,
+            RequiredWorkMinutes = entity.RequiredWorkMinutes
         });
     }
 
@@ -77,6 +87,11 @@ public sealed class ShiftsController(ICrudService<Shift> shifts) : Controller
         entity.StartTime = vm.StartTime;
         entity.EndTime = vm.EndTime;
         entity.IsOvernight = vm.IsOvernight;
+        entity.IsFlexibleHours = vm.IsFlexibleHours;
+        entity.FlexInStartTime = vm.FlexInStartTime;
+        entity.FlexInEndTime = vm.FlexInEndTime;
+        entity.GraceMinutes = vm.GraceMinutes;
+        entity.RequiredWorkMinutes = vm.RequiredWorkMinutes;
         await shifts.UpdateAsync(entity, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -96,4 +111,3 @@ public sealed class ShiftsController(ICrudService<Shift> shifts) : Controller
         return RedirectToAction(nameof(Index));
     }
 }
-

@@ -11,6 +11,8 @@ public static class DependencyInjection
     {
         services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
         services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IAttendancePunchService, AttendancePunchService>();
+        services.AddScoped<IAttendanceProcessingService, AttendanceProcessingService>();
 
         // Convenience typed registrations for common lookups
         services.AddScoped<ICrudService<Department>, CrudService<Department>>();
@@ -31,6 +33,8 @@ public static class DependencyInjection
         services.AddScoped<ICrudService<Candidate>, CrudService<Candidate>>();
         services.AddScoped<ICrudService<JobApplication>, CrudService<JobApplication>>();
         services.AddScoped<ICrudService<Interview>, CrudService<Interview>>();
+        services.AddScoped<ICrudService<Religion>, CrudService<Religion>>();
+        services.AddScoped<ICrudService<BloodGroup>, CrudService<BloodGroup>>();
 
         return services;
     }

@@ -1,4 +1,5 @@
 using HrSystem.Application.Abstractions;
+using HrSystem.Application.Attendance;
 using HrSystem.Domain.Entities;
 using HrSystem.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -34,15 +35,37 @@ public sealed class AttendanceController(
             return View(vm);
         }
 
-        await attendance.CreateAsync(new AttendanceRecord
+        var record = new AttendanceRecord
         {
             EmployeeId = vm.EmployeeId,
             Date = DateOnly.FromDateTime(vm.Date),
             ShiftId = vm.ShiftId,
             CheckInTime = vm.CheckInTime,
             CheckOutTime = vm.CheckOutTime,
+            Source = vm.Source,
+            DeviceVendor = vm.DeviceVendor,
+            DeviceId = vm.DeviceId,
+            DeviceUserId = vm.DeviceUserId,
+            RfidCardId = vm.RfidCardId,
+            MobileDeviceId = vm.MobileDeviceId,
+            Latitude = vm.Latitude,
+            Longitude = vm.Longitude,
+            LocationAccuracyMeters = vm.LocationAccuracyMeters,
             Notes = vm.Notes
-        }, cancellationToken);
+        };
+
+        AttendanceMetrics.ApplyMissingPunchStatus(record);
+
+        if (record.ShiftId.HasValue)
+        {
+            var shift = await shifts.GetByIdAsync(record.ShiftId.Value, cancellationToken);
+            if (shift is not null)
+            {
+                AttendanceMetrics.ApplyDerivedMetrics(record, shift);
+            }
+        }
+
+        await attendance.CreateAsync(record, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -63,6 +86,15 @@ public sealed class AttendanceController(
             ShiftId = entity.ShiftId,
             CheckInTime = entity.CheckInTime,
             CheckOutTime = entity.CheckOutTime,
+            Source = entity.Source,
+            DeviceVendor = entity.DeviceVendor,
+            DeviceId = entity.DeviceId,
+            DeviceUserId = entity.DeviceUserId,
+            RfidCardId = entity.RfidCardId,
+            MobileDeviceId = entity.MobileDeviceId,
+            Latitude = entity.Latitude,
+            Longitude = entity.Longitude,
+            LocationAccuracyMeters = entity.LocationAccuracyMeters,
             Notes = entity.Notes
         };
 
@@ -96,7 +128,28 @@ public sealed class AttendanceController(
         entity.ShiftId = vm.ShiftId;
         entity.CheckInTime = vm.CheckInTime;
         entity.CheckOutTime = vm.CheckOutTime;
+        entity.Source = vm.Source;
+        entity.DeviceVendor = vm.DeviceVendor;
+        entity.DeviceId = vm.DeviceId;
+        entity.DeviceUserId = vm.DeviceUserId;
+        entity.RfidCardId = vm.RfidCardId;
+        entity.MobileDeviceId = vm.MobileDeviceId;
+        entity.Latitude = vm.Latitude;
+        entity.Longitude = vm.Longitude;
+        entity.LocationAccuracyMeters = vm.LocationAccuracyMeters;
         entity.Notes = vm.Notes;
+
+        AttendanceMetrics.ApplyMissingPunchStatus(entity);
+
+        if (entity.ShiftId.HasValue)
+        {
+            var shift = await shifts.GetByIdAsync(entity.ShiftId.Value, cancellationToken);
+            if (shift is not null)
+            {
+                AttendanceMetrics.ApplyDerivedMetrics(entity, shift);
+            }
+        }
+
         await attendance.UpdateAsync(entity, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -127,4 +180,3 @@ public sealed class AttendanceController(
             .ToList();
     }
 }
-

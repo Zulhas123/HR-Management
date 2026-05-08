@@ -10,7 +10,9 @@ public sealed class EmployeesController(
     IEmployeeService employees,
     ICrudService<Department> departments,
     ICrudService<Designation> designations,
-    ICrudService<EmploymentType> employmentTypes) : Controller
+    ICrudService<EmploymentType> employmentTypes,
+    ICrudService<Religion> religions,
+    ICrudService<BloodGroup> bloodGroups) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
@@ -55,10 +57,21 @@ public sealed class EmployeesController(
             EmploymentTypeId = vm.EmploymentTypeId,
             NidNumber = vm.NidNumber,
             TinNumber = vm.TinNumber,
+            PassportNumber = vm.PassportNumber,
+            PresentAddress = vm.PresentAddress,
+            PermanentAddress = vm.PermanentAddress,
+            ReligionId = vm.ReligionId,
+            BloodGroupId = vm.BloodGroupId,
+            IsFestivalEligible = vm.IsFestivalEligible,
+            BanglaFirstName = vm.BanglaFirstName,
+            BanglaLastName = vm.BanglaLastName,
             BankName = vm.BankName,
             BankAccountNumber = vm.BankAccountNumber,
             MobileBankingProvider = vm.MobileBankingProvider,
             MobileBankingNumber = vm.MobileBankingNumber,
+            BiometricUserId = vm.BiometricUserId,
+            FaceProfileId = vm.FaceProfileId,
+            RfidCardId = vm.RfidCardId,
         }, cancellationToken);
 
         await SaveEmployeeFilesAsync(created, vm.PhotoFile, vm.SignatureFile, cancellationToken);
@@ -88,10 +101,21 @@ public sealed class EmployeesController(
             EmploymentTypeId = entity.EmploymentTypeId,
             NidNumber = entity.NidNumber,
             TinNumber = entity.TinNumber,
+            PassportNumber = entity.PassportNumber,
+            PresentAddress = entity.PresentAddress,
+            PermanentAddress = entity.PermanentAddress,
+            ReligionId = entity.ReligionId,
+            BloodGroupId = entity.BloodGroupId,
+            IsFestivalEligible = entity.IsFestivalEligible,
+            BanglaFirstName = entity.BanglaFirstName,
+            BanglaLastName = entity.BanglaLastName,
             BankName = entity.BankName,
             BankAccountNumber = entity.BankAccountNumber,
             MobileBankingProvider = entity.MobileBankingProvider,
             MobileBankingNumber = entity.MobileBankingNumber,
+            BiometricUserId = entity.BiometricUserId,
+            FaceProfileId = entity.FaceProfileId,
+            RfidCardId = entity.RfidCardId,
         };
 
         await PopulateLookupsAsync(vm, cancellationToken);
@@ -130,10 +154,21 @@ public sealed class EmployeesController(
         entity.EmploymentTypeId = vm.EmploymentTypeId;
         entity.NidNumber = vm.NidNumber;
         entity.TinNumber = vm.TinNumber;
+        entity.PassportNumber = vm.PassportNumber;
+        entity.PresentAddress = vm.PresentAddress;
+        entity.PermanentAddress = vm.PermanentAddress;
+        entity.ReligionId = vm.ReligionId;
+        entity.BloodGroupId = vm.BloodGroupId;
+        entity.IsFestivalEligible = vm.IsFestivalEligible;
+        entity.BanglaFirstName = vm.BanglaFirstName;
+        entity.BanglaLastName = vm.BanglaLastName;
         entity.BankName = vm.BankName;
         entity.BankAccountNumber = vm.BankAccountNumber;
         entity.MobileBankingProvider = vm.MobileBankingProvider;
         entity.MobileBankingNumber = vm.MobileBankingNumber;
+        entity.BiometricUserId = vm.BiometricUserId;
+        entity.FaceProfileId = vm.FaceProfileId;
+        entity.RfidCardId = vm.RfidCardId;
 
         await employees.UpdateAsync(entity, cancellationToken);
 
@@ -167,6 +202,14 @@ public sealed class EmployeesController(
 
         vm.EmploymentTypes = (await employmentTypes.ListAsync(cancellationToken))
             .Select(e => new SelectListItem(e.Name, e.Id.ToString()))
+            .ToList();
+
+        vm.Religions = (await religions.ListAsync(cancellationToken))
+            .Select(r => new SelectListItem(r.Name, r.Id.ToString()))
+            .ToList();
+
+        vm.BloodGroups = (await bloodGroups.ListAsync(cancellationToken))
+            .Select(b => new SelectListItem(b.Name, b.Id.ToString()))
             .ToList();
     }
 

@@ -73,9 +73,87 @@
     </div>
     <div class="col-md-4">
         <div class="mb-3">
+            <label asp-for="PassportNumber" class="form-label">Passport</label>
+            <input asp-for="PassportNumber" class="form-control" />
+            <span asp-validation-for="PassportNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="BiometricUserId" class="form-label">Biometric User ID</label>
+            <input asp-for="BiometricUserId" class="form-control" />
+            <span asp-validation-for="BiometricUserId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="FaceProfileId" class="form-label">Face Profile ID</label>
+            <input asp-for="FaceProfileId" class="form-control" />
+            <span asp-validation-for="FaceProfileId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="RfidCardId" class="form-label">RFID Card ID</label>
+            <input asp-for="RfidCardId" class="form-control" />
+            <span asp-validation-for="RfidCardId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
             <label asp-for="ResignationDate" class="form-label">Resignation Date</label>
             <input asp-for="ResignationDate" class="form-control" />
             <span asp-validation-for="ResignationDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="PresentAddress" class="form-label">Present Address</label>
+            <textarea asp-for="PresentAddress" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="PresentAddress" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="PermanentAddress" class="form-label">Permanent Address</label>
+            <textarea asp-for="PermanentAddress" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="PermanentAddress" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ReligionId" class="form-label">Religion</label>
+            <select asp-for="ReligionId" asp-items="Model.Religions" class="form-select">
+                <option value="">(not set)</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="BloodGroupId" class="form-label">Blood Group</label>
+            <select asp-for="BloodGroupId" asp-items="Model.BloodGroups" class="form-select">
+                <option value="">(not set)</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-check mt-4">
+            <input asp-for="IsFestivalEligible" class="form-check-input" />
+            <label asp-for="IsFestivalEligible" class="form-check-label">Festival Eligible</label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="BanglaFirstName" class="form-label">Bangla First Name</label>
+            <input asp-for="BanglaFirstName" class="form-control" />
+            <span asp-validation-for="BanglaFirstName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="BanglaLastName" class="form-label">Bangla Last Name</label>
+            <input asp-for="BanglaLastName" class="form-control" />
+            <span asp-validation-for="BanglaLastName" class="text-danger"></span>
         </div>
     </div>
     <div class="col-md-6">

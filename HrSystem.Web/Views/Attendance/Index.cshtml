@@ -17,6 +17,11 @@
             <th>Shift</th>
             <th>In</th>
             <th>Out</th>
+            <th>Source</th>
+            <th>Worked</th>
+            <th>Late</th>
+            <th>Early Exit</th>
+            <th>Missing Punch</th>
             <th class="text-end">Actions</th>
         </tr>
     </thead>
@@ -29,6 +34,11 @@
                 <td>@r.Shift?.Name</td>
                 <td>@r.CheckInTime</td>
                 <td>@r.CheckOutTime</td>
+                <td>@r.Source</td>
+                <td>@(r.WorkedMinutes is null ? "" : $"{r.WorkedMinutes}m")</td>
+                <td>@(r.LateMinutes is null ? "" : $"{r.LateMinutes}m")</td>
+                <td>@(r.EarlyExitMinutes is null ? "" : $"{r.EarlyExitMinutes}m")</td>
+                <td>@(r.MissingPunchStatus == HrSystem.Domain.Entities.MissingPunchStatus.None ? "" : r.MissingPunchStatus.ToString())</td>
                 <td class="text-end">
                     <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
                     <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@r.Id">Delete</a>
@@ -37,4 +47,3 @@
         }
     </tbody>
 </table>
-

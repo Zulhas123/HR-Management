@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IRepository<Designation>, Repository<Designation>>();
         services.AddScoped<IRepository<EmploymentType>, Repository<EmploymentType>>();
         services.AddScoped<IRepository<Employee>, EmployeeRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IRepository<EmployeeDocument>, EmployeeDocumentRepository>();
         services.AddScoped<IRepository<EmployeeEducation>, Repository<EmployeeEducation>>();
         services.AddScoped<IRepository<EmployeeExperience>, Repository<EmployeeExperience>>();
@@ -33,12 +34,15 @@ public static class DependencyInjection
         services.AddScoped<IRepository<EmployeeFamilyMember>, Repository<EmployeeFamilyMember>>();
         services.AddScoped<IRepository<Shift>, Repository<Shift>>();
         services.AddScoped<IRepository<AttendanceRecord>, AttendanceRecordRepository>();
+        services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
         services.AddScoped<IRepository<LeaveType>, Repository<LeaveType>>();
         services.AddScoped<IRepository<LeaveRequest>, LeaveRequestRepository>();
         services.AddScoped<IRepository<JobPosting>, Repository<JobPosting>>();
         services.AddScoped<IRepository<Candidate>, Repository<Candidate>>();
         services.AddScoped<IRepository<JobApplication>, JobApplicationRepository>();
         services.AddScoped<IRepository<Interview>, InterviewRepository>();
+        services.AddScoped<IRepository<Religion>, Repository<Religion>>();
+        services.AddScoped<IRepository<BloodGroup>, Repository<BloodGroup>>();
 
         return services;
     }

@@ -28,5 +28,36 @@
             <label asp-for="IsOvernight" class="form-check-label"></label>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="form-check mt-4">
+            <input asp-for="IsFlexibleHours" class="form-check-input" />
+            <label asp-for="IsFlexibleHours" class="form-check-label">Flexible hours</label>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="GraceMinutes" class="form-label">Grace (minutes)</label>
+            <input asp-for="GraceMinutes" class="form-control" />
+            <span asp-validation-for="GraceMinutes" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="RequiredWorkMinutes" class="form-label">Required work (minutes)</label>
+            <input asp-for="RequiredWorkMinutes" class="form-control" />
+            <span asp-validation-for="RequiredWorkMinutes" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="FlexInStartTime" class="form-label">Flex in start</label>
+            <input asp-for="FlexInStartTime" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="FlexInEndTime" class="form-label">Flex in end</label>
+            <input asp-for="FlexInEndTime" class="form-control" />
+        </div>
+    </div>
 </div>
-
