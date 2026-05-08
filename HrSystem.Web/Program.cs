@@ -62,6 +62,18 @@ if (app.Environment.IsDevelopment())
             new HrSystem.Domain.Entities.Shift { Name = "Night", StartTime = new TimeOnly(22, 0), EndTime = new TimeOnly(6, 0), IsOvernight = true });
     }
 
+    if (!await db.LeaveTypes.AnyAsync())
+    {
+        db.LeaveTypes.AddRange(
+            new HrSystem.Domain.Entities.LeaveType { Name = "Casual Leave", DefaultAnnualAllocation = 10, IsPaid = true },
+            new HrSystem.Domain.Entities.LeaveType { Name = "Sick Leave", DefaultAnnualAllocation = 14, IsPaid = true },
+            new HrSystem.Domain.Entities.LeaveType { Name = "Earn Leave", DefaultAnnualAllocation = 0, IsPaid = true },
+            new HrSystem.Domain.Entities.LeaveType { Name = "Maternity Leave", DefaultAnnualAllocation = 0, IsPaid = true },
+            new HrSystem.Domain.Entities.LeaveType { Name = "Paternity Leave", DefaultAnnualAllocation = 0, IsPaid = true },
+            new HrSystem.Domain.Entities.LeaveType { Name = "Festival Leave", DefaultAnnualAllocation = 0, IsPaid = true },
+            new HrSystem.Domain.Entities.LeaveType { Name = "Leave Without Pay", DefaultAnnualAllocation = 0, IsPaid = false });
+    }
+
     await db.SaveChangesAsync();
 }
 

@@ -18,6 +18,8 @@ public static class DependencyInjection
         services.AddScoped<ICrudService<EmploymentType>, CrudService<EmploymentType>>();
         services.AddScoped<ICrudService<Shift>, CrudService<Shift>>();
         services.AddScoped<ICrudService<AttendanceRecord>, CrudService<AttendanceRecord>>();
+        services.AddScoped<ICrudService<LeaveType>, CrudService<LeaveType>>();
+        services.AddScoped<ICrudService<LeaveRequest>, CrudService<LeaveRequest>>();
 
         return services;
     }

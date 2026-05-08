@@ -1,0 +1,47 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.LeaveRequest>
+
+@{
+    ViewData["Title"] = "Leave Requests";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Leave Requests</h1>
+    <a class="btn btn-primary" asp-action="Create">New Request</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Type</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Days</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Employee?.EmployeeCode - @r.Employee?.FirstName @r.Employee?.LastName</td>
+                <td>@r.LeaveType?.Name</td>
+                <td>@r.StartDate</td>
+                <td>@r.EndDate</td>
+                <td>@r.TotalDays</td>
+                <td>@r.Status</td>
+                <td class="text-end">
+                    @if (r.Status == HrSystem.Domain.Entities.LeaveRequestStatus.Pending)
+                    {
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                        <a class="btn btn-sm btn-outline-success" asp-action="Approve" asp-route-id="@r.Id">Approve</a>
+                        <a class="btn btn-sm btn-outline-warning" asp-action="Reject" asp-route-id="@r.Id">Reject</a>
+                    }
+                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@r.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

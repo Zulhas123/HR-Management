@@ -1,0 +1,32 @@
+@model HrSystem.Web.ViewModels.LeaveTypeFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="DefaultAnnualAllocation" class="form-label">Default Allocation (days/year)</label>
+            <input asp-for="DefaultAnnualAllocation" class="form-control" />
+            <span asp-validation-for="DefaultAnnualAllocation" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="IsPaid" class="form-check-input" />
+            <label asp-for="IsPaid" class="form-check-label">Paid Leave</label>
+        </div>
+    </div>
+</div>
+

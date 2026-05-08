@@ -23,6 +23,13 @@ Step 2 - Attendance (MVP):
 - Manual attendance CRUD (employee + date + in/out + optional shift)
 - REST API endpoints for shift + attendance CRUD
 
+Step 3 - Leave Management (MVP):
+
+- Leave Types CRUD (Casual/Sick/etc. seeded in Development)
+- Leave Requests CRUD
+- Basic approve/reject workflow
+- REST API endpoints for leave types + leave requests (+ approve/reject actions)
+
 ## Solution Structure
 
 - `HrSystem.Domain`: Entities + repository abstractions
@@ -57,6 +64,14 @@ Step 2 - Attendance (MVP):
    - `POST /api/shifts`
    - `GET /api/attendance`
    - `POST /api/attendance`
+
+5. Leave endpoints:
+   - `GET /api/leave-types`
+   - `POST /api/leave-types`
+   - `GET /api/leave-requests`
+   - `POST /api/leave-requests`
+   - `POST /api/leave-requests/{id}/approve`
+   - `POST /api/leave-requests/{id}/reject`
 
 ## Next Features (Planned)
 

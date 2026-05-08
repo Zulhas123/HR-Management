@@ -11,6 +11,8 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Shift> Shifts => Set<Shift>();
     public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
+    public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
+    public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -81,6 +83,34 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
                 .WithMany()
                 .HasForeignKey(x => x.ShiftId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<LeaveType>(b =>
+        {
+            b.Property(x => x.Name).HasMaxLength(100).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.HasIndex(x => x.Name).IsUnique();
+            b.Property(x => x.DefaultAnnualAllocation).HasColumnType("decimal(18,2)");
+        });
+
+        modelBuilder.Entity<LeaveRequest>(b =>
+        {
+            b.Property(x => x.Reason).HasMaxLength(500);
+            b.Property(x => x.DecisionBy).HasMaxLength(200);
+            b.Property(x => x.DecisionNote).HasMaxLength(500);
+            b.Property(x => x.TotalDays).HasColumnType("decimal(18,2)");
+
+            b.HasIndex(x => new { x.EmployeeId, x.StartDate, x.EndDate });
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.LeaveType)
+                .WithMany()
+                .HasForeignKey(x => x.LeaveTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
