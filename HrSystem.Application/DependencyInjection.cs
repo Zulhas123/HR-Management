@@ -15,6 +15,10 @@ public static class DependencyInjection
         services.AddScoped<IAttendanceProcessingService, AttendanceProcessingService>();
         services.AddScoped<ILeaveCalendarService, LeaveCalendarService>();
         services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
+        services.AddScoped<IPayrollIntegrationService, PayrollIntegrationService>();
+        services.AddScoped<IWorkforceReportingService, WorkforceReportingService>();
+        services.AddScoped<IOvertimeService, OvertimeService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         // Convenience typed registrations for common lookups
         services.AddScoped<ICrudService<Department>, CrudService<Department>>();
@@ -48,6 +52,12 @@ public static class DependencyInjection
         services.AddScoped<ICrudService<ExitInterview>, CrudService<ExitInterview>>();
         services.AddScoped<ICrudService<OffboardingClearanceItem>, CrudService<OffboardingClearanceItem>>();
         services.AddScoped<ICrudService<FinalSettlement>, CrudService<FinalSettlement>>();
+        services.AddScoped<ICrudService<EmployeeBonus>, CrudService<EmployeeBonus>>();
+        services.AddScoped<ICrudService<SalaryAdjustment>, CrudService<SalaryAdjustment>>();
+        services.AddScoped<ICrudService<EmployeeTask>, CrudService<EmployeeTask>>();
+        services.AddScoped<ICrudService<DailyWorkLog>, CrudService<DailyWorkLog>>();
+        services.AddScoped<ICrudService<OvertimeRequest>, CrudService<OvertimeRequest>>();
+        services.AddScoped<ICrudService<OvertimePolicy>, CrudService<OvertimePolicy>>();
 
         return services;
     }

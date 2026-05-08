@@ -1,4 +1,5 @@
 using HrSystem.Application;
+using HrSystem.Application.Security;
 using HrSystem.Infrastructure;
 using HrSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -58,8 +59,8 @@ if (app.Environment.IsDevelopment())
     if (!await db.Shifts.AnyAsync())
     {
         db.Shifts.AddRange(
-            new HrSystem.Domain.Entities.Shift { Name = "General", StartTime = new TimeOnly(9, 0), EndTime = new TimeOnly(18, 0), IsOvernight = false },
-            new HrSystem.Domain.Entities.Shift { Name = "Night", StartTime = new TimeOnly(22, 0), EndTime = new TimeOnly(6, 0), IsOvernight = true });
+            new HrSystem.Domain.Entities.Shift { Name = "General", StartTime = new TimeOnly(9, 0), EndTime = new TimeOnly(18, 0), IsOvernight = false, RequiredWorkMinutes = 480 },
+            new HrSystem.Domain.Entities.Shift { Name = "Night", StartTime = new TimeOnly(22, 0), EndTime = new TimeOnly(6, 0), IsOvernight = true, RequiredWorkMinutes = 480 });
     }
 
     if (!await db.LeaveTypes.AnyAsync())
@@ -119,6 +120,89 @@ if (app.Environment.IsDevelopment())
             new HrSystem.Domain.Entities.BloodGroup { Name = "O-" });
     }
 
+    if (!await db.OvertimePolicies.AnyAsync())
+    {
+        db.OvertimePolicies.Add(new HrSystem.Domain.Entities.OvertimePolicy
+        {
+            EffectiveFrom = DateOnly.FromDateTime(DateTime.UtcNow.Date),
+            NormalMultiplier = 1.0m,
+            HolidayMultiplier = 2.0m,
+            ApprovalLevelsRequired = 1
+        });
+    }
+
+    // RBAC seed (roles, permissions, Super Admin user)
+    if (!await db.AppPermissions.AnyAsync())
+    {
+        db.AppPermissions.AddRange(
+            new HrSystem.Domain.Entities.AppPermission { Code = "employees.read", Description = "Read employees" },
+            new HrSystem.Domain.Entities.AppPermission { Code = "employees.write", Description = "Create/update/delete employees" },
+            new HrSystem.Domain.Entities.AppPermission { Code = "audit.read", Description = "Read audit logs and login history" },
+            new HrSystem.Domain.Entities.AppPermission { Code = "security.manage", Description = "Manage users, roles, and permissions" });
+    }
+
+    if (!await db.AppRoles.AnyAsync())
+    {
+        db.AppRoles.AddRange(
+            new HrSystem.Domain.Entities.AppRole { Name = "Super Admin", Description = "Full system access" },
+            new HrSystem.Domain.Entities.AppRole { Name = "HR Admin", Description = "HR administration" },
+            new HrSystem.Domain.Entities.AppRole { Name = "HR Manager", Description = "HR management" },
+            new HrSystem.Domain.Entities.AppRole { Name = "Team Lead", Description = "Team lead" },
+            new HrSystem.Domain.Entities.AppRole { Name = "Employee", Description = "Employee self access" },
+            new HrSystem.Domain.Entities.AppRole { Name = "Accounts", Description = "Accounts/payroll access" },
+            new HrSystem.Domain.Entities.AppRole { Name = "Branch Manager", Description = "Branch management" });
+    }
+
+    await db.SaveChangesAsync();
+
+    var superAdminRole = await db.AppRoles.FirstOrDefaultAsync(x => x.Name == "Super Admin");
+    if (superAdminRole is not null)
+    {
+        var permissionIds = await db.AppPermissions.Select(x => x.Id).ToListAsync();
+        foreach (var pid in permissionIds)
+        {
+            if (!await db.AppRolePermissions.AnyAsync(x => x.AppRoleId == superAdminRole.Id && x.AppPermissionId == pid))
+            {
+                db.AppRolePermissions.Add(new HrSystem.Domain.Entities.AppRolePermission
+                {
+                    AppRoleId = superAdminRole.Id,
+                    AppPermissionId = pid
+                });
+            }
+        }
+    }
+
+    var adminUser = builder.Configuration["Admin:Username"] ?? "admin";
+    var adminPass = builder.Configuration["Admin:Password"] ?? "admin123";
+
+    var existingAdmin = await db.AppUsers.FirstOrDefaultAsync(x => x.Username == adminUser);
+    if (existingAdmin is null)
+    {
+        existingAdmin = new HrSystem.Domain.Entities.AppUser
+        {
+            Username = adminUser,
+            DisplayName = adminUser,
+            PasswordHash = PasswordHasher.Hash(adminPass),
+            IsActive = true
+        };
+
+        db.AppUsers.Add(existingAdmin);
+        await db.SaveChangesAsync();
+    }
+
+    if (superAdminRole is not null)
+    {
+        var hasRole = await db.AppUserRoles.AnyAsync(x => x.AppUserId == existingAdmin.Id && x.AppRoleId == superAdminRole.Id);
+        if (!hasRole)
+        {
+            db.AppUserRoles.Add(new HrSystem.Domain.Entities.AppUserRole
+            {
+                AppUserId = existingAdmin.Id,
+                AppRoleId = superAdminRole.Id
+            });
+        }
+    }
+
     await db.SaveChangesAsync();
 }
 
@@ -132,6 +216,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseMiddleware<HrSystem.Web.Middleware.RequestAuditMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

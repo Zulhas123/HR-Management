@@ -1,0 +1,60 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.OvertimeRequest>
+
+@{
+    ViewData["Title"] = "Overtime Requests";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Overtime Requests</h1>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" asp-action="AutoGenerate">Auto-generate</a>
+        <a class="btn btn-primary" asp-action="Create">New OT Request</a>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Employee</th>
+            <th>Status</th>
+            <th class="text-end">Calculated</th>
+            <th class="text-end">Requested</th>
+            <th class="text-end">Approved</th>
+            <th>Holiday</th>
+            <th class="text-end">Multiplier</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Date</td>
+                <td>@(r.Employee?.EmployeeCode ?? r.EmployeeId.ToString())</td>
+                <td>@r.Status</td>
+                <td class="text-end">@($"{r.CalculatedMinutes / 60m:0.##}h")</td>
+                <td class="text-end">@($"{r.RequestedMinutes / 60m:0.##}h")</td>
+                <td class="text-end">@((r.ApprovedMinutes.HasValue ? $"{r.ApprovedMinutes.Value / 60m:0.##}h" : ""))</td>
+                <td>@(r.IsHoliday ? "Yes" : "No")</td>
+                <td class="text-end">@r.PayMultiplier</td>
+                <td class="text-end">
+                    @if (r.Status == HrSystem.Domain.Entities.OvertimeRequestStatus.Pending)
+                    {
+                        <form method="post" asp-action="Approve" asp-route-id="@r.Id" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                        </form>
+                        <form method="post" asp-action="Reject" asp-route-id="@r.Id" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-warning">Reject</button>
+                        </form>
+                    }
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@r.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

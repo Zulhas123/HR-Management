@@ -42,6 +42,20 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
     public DbSet<Interview> Interviews => Set<Interview>();
     public DbSet<Religion> Religions => Set<Religion>();
     public DbSet<BloodGroup> BloodGroups => Set<BloodGroup>();
+    public DbSet<EmployeeBonus> EmployeeBonuses => Set<EmployeeBonus>();
+    public DbSet<SalaryAdjustment> SalaryAdjustments => Set<SalaryAdjustment>();
+    public DbSet<EmployeeTask> EmployeeTasks => Set<EmployeeTask>();
+    public DbSet<DailyWorkLog> DailyWorkLogs => Set<DailyWorkLog>();
+    public DbSet<OvertimePolicy> OvertimePolicies => Set<OvertimePolicy>();
+    public DbSet<OvertimeRequest> OvertimeRequests => Set<OvertimeRequest>();
+    public DbSet<OvertimeApprovalStep> OvertimeApprovalSteps => Set<OvertimeApprovalStep>();
+    public DbSet<AppUser> AppUsers => Set<AppUser>();
+    public DbSet<AppRole> AppRoles => Set<AppRole>();
+    public DbSet<AppPermission> AppPermissions => Set<AppPermission>();
+    public DbSet<AppUserRole> AppUserRoles => Set<AppUserRole>();
+    public DbSet<AppRolePermission> AppRolePermissions => Set<AppRolePermission>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<LoginHistory> LoginHistories => Set<LoginHistory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -352,6 +366,196 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
                 .WithMany()
                 .HasForeignKey(x => x.LeaveTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<EmployeeBonus>(b =>
+        {
+            b.Property(x => x.Title).HasMaxLength(200);
+            b.Property(x => x.Notes).HasMaxLength(500);
+            b.Property(x => x.Amount).HasColumnType("decimal(18,2)");
+
+            b.HasIndex(x => new { x.EmployeeId, x.AwardDate });
+            b.HasIndex(x => x.SyncedAtUtc);
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SalaryAdjustment>(b =>
+        {
+            b.Property(x => x.Reason).HasMaxLength(500);
+            b.Property(x => x.Amount).HasColumnType("decimal(18,2)");
+
+            b.HasIndex(x => new { x.EmployeeId, x.EffectiveDate });
+            b.HasIndex(x => x.SyncedAtUtc);
+            b.HasIndex(x => x.Kind);
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<EmployeeTask>(b =>
+        {
+            b.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(2000);
+            b.Property(x => x.AssignedBy).HasMaxLength(200);
+
+            b.HasIndex(x => new { x.EmployeeId, x.AssignedDate });
+            b.HasIndex(x => x.Status);
+            b.HasIndex(x => x.Priority);
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<DailyWorkLog>(b =>
+        {
+            b.Property(x => x.Summary).HasMaxLength(2000);
+            b.HasIndex(x => new { x.EmployeeId, x.Date }).IsUnique();
+            b.HasIndex(x => x.IsWorkFromHome);
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.EmployeeTask)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeTaskId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<OvertimePolicy>(b =>
+        {
+            b.Property(x => x.NormalMultiplier).HasColumnType("decimal(18,2)");
+            b.Property(x => x.HolidayMultiplier).HasColumnType("decimal(18,2)");
+            b.HasIndex(x => x.EffectiveFrom);
+        });
+
+        modelBuilder.Entity<OvertimeRequest>(b =>
+        {
+            b.Property(x => x.Reason).HasMaxLength(500);
+            b.Property(x => x.DecisionBy).HasMaxLength(200);
+            b.Property(x => x.DecisionNote).HasMaxLength(500);
+            b.Property(x => x.PayMultiplier).HasColumnType("decimal(18,2)");
+
+            b.HasIndex(x => new { x.EmployeeId, x.Date }).IsUnique();
+            b.HasIndex(x => x.Status);
+            b.HasIndex(x => x.IsHoliday);
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.AttendanceRecord)
+                .WithMany()
+                .HasForeignKey(x => x.AttendanceRecordId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<OvertimeApprovalStep>(b =>
+        {
+            b.Property(x => x.DecidedBy).HasMaxLength(200);
+            b.Property(x => x.Note).HasMaxLength(500);
+            b.HasIndex(x => new { x.OvertimeRequestId, x.Level }).IsUnique();
+
+            b.HasOne(x => x.OvertimeRequest)
+                .WithMany(r => r.ApprovalSteps)
+                .HasForeignKey(x => x.OvertimeRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AppUser>(b =>
+        {
+            b.Property(x => x.Username).HasMaxLength(100).IsRequired();
+            b.Property(x => x.DisplayName).HasMaxLength(200);
+            b.Property(x => x.PasswordHash).HasMaxLength(500).IsRequired();
+            b.HasIndex(x => x.Username).IsUnique();
+        });
+
+        modelBuilder.Entity<AppRole>(b =>
+        {
+            b.Property(x => x.Name).HasMaxLength(100).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.HasIndex(x => x.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<AppPermission>(b =>
+        {
+            b.Property(x => x.Code).HasMaxLength(150).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(500);
+            b.HasIndex(x => x.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<AppUserRole>(b =>
+        {
+            b.HasIndex(x => new { x.AppUserId, x.AppRoleId }).IsUnique();
+
+            b.HasOne(x => x.AppUser)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(x => x.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.AppRole)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(x => x.AppRoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AppRolePermission>(b =>
+        {
+            b.HasIndex(x => new { x.AppRoleId, x.AppPermissionId }).IsUnique();
+
+            b.HasOne(x => x.AppRole)
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(x => x.AppRoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.AppPermission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(x => x.AppPermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AuditLog>(b =>
+        {
+            b.Property(x => x.Username).HasMaxLength(100);
+            b.Property(x => x.EventType).HasMaxLength(100);
+            b.Property(x => x.Action).HasMaxLength(500);
+            b.Property(x => x.HttpMethod).HasMaxLength(20);
+            b.Property(x => x.Path).HasMaxLength(500);
+            b.Property(x => x.IpAddress).HasMaxLength(100);
+            b.Property(x => x.UserAgent).HasMaxLength(500);
+            b.Property(x => x.Data).HasMaxLength(4000);
+
+            b.HasIndex(x => x.AtUtc);
+            b.HasIndex(x => x.EventType);
+            b.HasIndex(x => x.Username);
+
+            b.HasOne(x => x.AppUser)
+                .WithMany()
+                .HasForeignKey(x => x.AppUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<LoginHistory>(b =>
+        {
+            b.Property(x => x.IpAddress).HasMaxLength(100);
+            b.Property(x => x.UserAgent).HasMaxLength(500);
+            b.HasIndex(x => x.LoggedInAtUtc);
+            b.HasIndex(x => x.AppUserId);
+
+            b.HasOne(x => x.AppUser)
+                .WithMany()
+                .HasForeignKey(x => x.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<EmployeeOnboarding>(b =>

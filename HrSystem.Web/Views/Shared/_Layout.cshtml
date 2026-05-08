@@ -54,6 +54,19 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Workforce
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="EmployeeTasks" asp-action="Index">Employee Tasks</a></li>
+                                <li><a class="dropdown-item" asp-controller="DailyWorkLogs" asp-action="Index">Daily Work Logs</a></li>
+                                <li><a class="dropdown-item" asp-controller="ProductivityReports" asp-action="Index">Productivity Report</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="OvertimeRequests" asp-action="Index">Overtime</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Onboarding
                             </a>
                             <ul class="dropdown-menu">

@@ -1,12 +1,12 @@
 # HR Management System (ASP.NET Core MVC)
 
-Bangladesh-focused HRMS implemented with a minimal, maintainable structure:
+Bangladesh-focused HRMS with a minimal, maintainable implementation:
 
 - ASP.NET Core MVC (UI) + REST APIs
-- Clean Architecture style layering: `Domain` / `Application` / `Infrastructure` / `Web`
-- Repository pattern + dependency injection
-- Entity Framework Core (Code First) with SQL Server
-- JWT authentication for API endpoints
+- Clean Architecture layering: `Domain` / `Application` / `Infrastructure` / `Web`
+- Repository pattern + DI
+- EF Core (code-first) + SQL Server
+- JWT authentication + RBAC (roles/permissions)
 - Docker Compose for local SQL Server + app
 
 ## Architecture
@@ -16,58 +16,28 @@ Bangladesh-focused HRMS implemented with a minimal, maintainable structure:
 - `HrSystem.Infrastructure`: EF Core `DbContext` + repository implementations
 - `HrSystem.Web`: MVC UI + API controllers + auth/configuration
 
+## Folder Structure (Feature-Oriented)
+
+- `HrSystem.Domain/Entities/<Feature>/...`: Feature-grouped entities (Attendance, Leave, Recruitment, Onboarding, Offboarding, Workforce, PayrollIntegration, Overtime, Security, MasterData)
+- `HrSystem.Domain/Repositories/<Feature>/...`: Feature-grouped repository abstractions
+- `HrSystem.Application/Features/<Feature>/...`: Feature-grouped services/DTOs/abstractions
+- `HrSystem.Infrastructure/Repositories/<Feature>/...`: Feature-grouped repository implementations
+- `HrSystem.Web/Features/<Feature>/...`: Feature-grouped MVC + API controllers and view-models
+- `HrSystem.Web/Views/<ControllerName>/...`: MVC views (standard ASP.NET Core conventions)
+
 ## Features (Implemented)
 
-Core HR - Employee Management:
-
-- Master data: Departments, Designations, Employment Types (MVC CRUD)
-- Employees: create/edit/delete + auto-generated employee code (`EMP-000001`, ...)
-- Joining/resignation fields (join date + resignation date)
-- Digital employee file: photo upload, signature upload, document uploads, education, experience
-- Transfer history + promotion history (per employee)
-- Emergency contacts + family members (per employee)
-- REST API: Employee CRUD (JWT protected)
-
-Bangladesh-specific employee fields (partial):
-
-- NID, TIN, Passport number
-- Present address and permanent address
-- Religion and blood group (master data)
-- Festival eligibility flag
-- Bangla name fields (Bangla/English profile support)
-
-Attendance (MVP):
-
-- Shifts (MVC CRUD)
-- Flexible office hours settings on shifts (flex window + grace + required minutes)
-- Attendance records with source metadata (manual/biometric/face/RFID/GPS) + optional device/location fields
-- Late entry calculation + early exit tracking + missing punch status (derived metrics)
-- Auto attendance processing endpoint (`POST /api/attendance/process`) for batch recompute (JWT protected)
-- REST API: Shifts + Attendance CRUD (JWT protected)
-- REST API: Attendance punch endpoint (`POST /api/attendance/punch`) for biometric/face/RFID/GPS integrations (JWT protected)
-
-Leave Management (MVP):
-
-- Leave Types (MVC CRUD; common types seeded in Development)
-- Leave policy setup (per leave type: approval levels, weekend/holiday counting, encashment settings)
-- Holiday calendar (MVC CRUD) + Weekend configuration (MVC)
-- Leave Requests (MVC CRUD) + multi-level approval flow (approve advances levels until final approval)
-- Leave balance tracking (per employee/year/leave type) + balance checks on final approval
-- Leave encashment requests (MVC) + approve/reject + mark paid
-- REST API: Leave Types + Leave Requests (+ approve/reject) (JWT protected)
-- REST API: Holidays, Weekends, Leave Balances, Leave Encashments (JWT protected)
-
-Recruitment & Hiring (MVP):
-
-- Job postings, candidates, applications (pipeline stage), interviews (MVC CRUD)
-- REST API: Job postings, candidates, applications, interviews CRUD (JWT protected)
-
-Onboarding & Offboarding (MVP):
-
-- Onboarding: digital joining form (department/designation/employment type assignment), document checklist, orientation checklist
-- Asset assignment + asset return tracking
-- Employee handbook upload + acknowledgement
-- Offboarding: exit interview, clearance workflow, final settlement, experience certificate (printable)
+- **Core HR / Master Data**: Department/Designation/EmploymentType/Shifts/Religion/BloodGroup CRUD.
+- **Employees**: Employee CRUD + Bangladesh fields (NID/TIN/passport, addresses, bank/mobile banking) + document/file uploads.
+- **Attendance**: Shift setup, punch endpoint (`POST /api/attendance/punch`), derived metrics (worked/late/early/missing punch), batch recompute (`POST /api/attendance/process`).
+- **Leave (MVP)**: Leave types/policies, holiday/weekend calendars, requests with multi-level approval, balances, encashments.
+- **Recruitment (MVP)**: Job postings, candidates, applications, interviews (CRUD).
+- **Onboarding (MVP)**: Joining form, document checklist, orientation checklist, asset assignment, handbook + acknowledgement.
+- **Offboarding (MVP)**: Exit interview, clearance items, final settlement.
+- **Task & Workforce**: Employee task assignment, daily work logs (incl. WFH), productivity/team performance report.
+- **Overtime (OT)**: Auto OT generation from attendance, holiday/double OT rules (policy multipliers), OT approval workflow.
+- **Payroll Integration**: Period export/summary combining attendance + leave deductions + overtime + bonuses + salary adjustments.
+- **Security (RBAC)**: Roles + permissions, permission-guarded endpoints (sample on Employees API), audit logs (request-level), activity tracking, login history.
 
 ## Prerequisites
 
@@ -77,59 +47,43 @@ Onboarding & Offboarding (MVP):
 ## Configuration
 
 - Connection string: `HrSystem.Web/appsettings.json` -> `ConnectionStrings:DefaultConnection`
-- JWT settings: `HrSystem.Web/appsettings.json` -> `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Key`
-- Admin user for token (MVP): `HrSystem.Web/appsettings.json` -> `Admin:Username`, `Admin:Password`
+- JWT: `HrSystem.Web/appsettings.json` -> `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Key`
+- Seeded Super Admin user (Development): `HrSystem.Web/appsettings.json` -> `Admin:Username`, `Admin:Password`
 
 Important: change `Jwt:Key` before using in real environments.
 
 ## Run (LocalDB / SQL Server)
 
 1. Update `HrSystem.Web/appsettings.json` -> `Jwt:Key`
-2. Start the app:
+2. Run:
    - `dotnet run --project HrSystem.Web`
-3. In Development, the database is created automatically via `EnsureCreated()` and seeded with basic master data.
+3. In Development, the database is created automatically via `EnsureCreated()` and seeded (master data + OT policy + RBAC roles/permissions + Super Admin user).
 
 Note: `EnsureCreated()` does not update an existing database schema. If you pulled new code with model changes, drop/recreate your local database (or switch to EF Core migrations) before running.
 
-Uploaded files (photos/signatures/documents) are stored under `HrSystem.Web/wwwroot/uploads/` and are ignored by git (`.gitignore`).
+Uploads are stored under `HrSystem.Web/wwwroot/uploads/` (git-ignored).
 
 ## Run (Docker Compose)
 
-- Start SQL Server + web app:
-  - `docker compose up --build`
-- App:
-  - `http://localhost:8080`
+- `docker compose up --build`
+- App: `http://localhost:8080`
 
-## API (JWT)
+## API Authentication (JWT)
 
 1. Get token:
    - `POST /api/auth/token`
-   - Body: `{ "username": "admin", "password": "admin123" }`
-2. Use the token header:
+   - Body: `{ "username": "admin", "password": "admin123" }` (Development default)
+2. Use:
    - `Authorization: Bearer <token>`
 
-Endpoints:
+## Key API Endpoints
 
 - Employees: `GET/POST /api/employees`, `GET/PUT/DELETE /api/employees/{id}`
-- Attendance: `GET/POST /api/attendance`, `POST /api/attendance/punch`, `POST /api/attendance/process`, `GET/POST /api/shifts`
-- Leave: `GET/POST /api/leave-types`, `GET/POST /api/leave-requests`, `POST /api/leave-requests/{id}/approve`, `POST /api/leave-requests/{id}/reject`, `GET/POST /api/holidays`, `GET /api/weekends/current`, `GET /api/leave-balances/{employeeId}/{year}`, `GET/POST /api/leave-encashments`
+- Attendance: `GET/POST /api/attendance`, `POST /api/attendance/punch`, `POST /api/attendance/process`
+- Leave: `GET/POST /api/leave-types`, `GET/POST /api/leave-requests`, `POST /api/leave-requests/{id}/approve`, `POST /api/leave-requests/{id}/reject`, `GET/POST /api/holidays`, `GET/POST /api/leave-encashments`
 - Recruitment: `GET/POST /api/job-postings`, `GET/POST /api/candidates`, `GET/POST /api/job-applications`, `GET/POST /api/interviews`
 - Onboarding/Offboarding: `GET/POST /api/onboardings`, `GET/POST /api/offboardings`, `GET/POST /api/employee-assets`
-
-Attendance punch notes:
-
-- `POST /api/attendance/punch` accepts `employeeId` or one of `biometricUserId` / `faceProfileId` / `rfidCardId`.
-- `source` enum: Manual=0, Biometric=1, FaceRecognition=2, Rfid=3, GpsMobile=4
-- `deviceVendor` enum: Unknown=0, ZkTeco=1, ESSL=2, Hikvision=3
-
-Attendance processing notes:
-
-- `POST /api/attendance/process` recomputes missing punch + late/early/worked metrics for a date range.
-
-## Next Features (Planned)
-
-From the provided documentation, the next modules include:
-
-- Employee self-service (ESS)
-- Reporting
-- Onboarding/offboarding, performance, payroll integration, and more
+- Payroll Integration: `GET /api/payroll-integration/period-summary`, `POST /api/payroll-integration/export`
+- Task & Workforce: `GET/POST /api/employee-tasks`, `GET/POST /api/daily-work-logs`, `GET /api/workforce/reports/productivity`
+- Overtime (OT): `GET/POST /api/overtime-requests`, `POST /api/overtime-requests/{id}/approve`, `POST /api/overtime-requests/{id}/reject`, `POST /api/overtime-requests/auto-generate`
+- Security/RBAC: `GET/POST/PUT/DELETE /api/security/users`, `GET/POST/PUT/DELETE /api/security/roles`, `GET/POST/PUT/DELETE /api/security/permissions`, `GET /api/audit-logs`, `GET /api/login-history`

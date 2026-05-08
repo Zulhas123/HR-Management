@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
         services.AddScoped<IRepository<LeaveType>, Repository<LeaveType>>();
         services.AddScoped<IRepository<LeaveRequest>, LeaveRequestRepository>();
+        services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
         services.AddScoped<IRepository<LeaveApprovalStep>, Repository<LeaveApprovalStep>>();
         services.AddScoped<IRepository<LeaveBalance>, LeaveBalanceRepository>();
         services.AddScoped<ILeaveBalanceRepository, LeaveBalanceRepository>();
@@ -61,6 +62,27 @@ public static class DependencyInjection
         services.AddScoped<IRepository<Interview>, InterviewRepository>();
         services.AddScoped<IRepository<Religion>, Repository<Religion>>();
         services.AddScoped<IRepository<BloodGroup>, Repository<BloodGroup>>();
+        services.AddScoped<IRepository<EmployeeBonus>, EmployeeBonusRepository>();
+        services.AddScoped<IEmployeeBonusRepository, EmployeeBonusRepository>();
+        services.AddScoped<IRepository<SalaryAdjustment>, SalaryAdjustmentRepository>();
+        services.AddScoped<ISalaryAdjustmentRepository, SalaryAdjustmentRepository>();
+        services.AddScoped<IRepository<EmployeeTask>, EmployeeTaskRepository>();
+        services.AddScoped<IEmployeeTaskRepository, EmployeeTaskRepository>();
+        services.AddScoped<IRepository<DailyWorkLog>, DailyWorkLogRepository>();
+        services.AddScoped<IDailyWorkLogRepository, DailyWorkLogRepository>();
+        services.AddScoped<IRepository<OvertimePolicy>, Repository<OvertimePolicy>>();
+        services.AddScoped<IRepository<OvertimeRequest>, OvertimeRequestRepository>();
+        services.AddScoped<IOvertimeRequestRepository, OvertimeRequestRepository>();
+        services.AddScoped<IRepository<OvertimeApprovalStep>, Repository<OvertimeApprovalStep>>();
+        services.AddScoped<IRepository<AppUser>, UserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRepository<AppRole>, RoleRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IRepository<AppPermission>, Repository<AppPermission>>();
+        services.AddScoped<IRepository<AppUserRole>, Repository<AppUserRole>>();
+        services.AddScoped<IRepository<AppRolePermission>, Repository<AppRolePermission>>();
+        services.AddScoped<IRepository<AuditLog>, Repository<AuditLog>>();
+        services.AddScoped<IRepository<LoginHistory>, Repository<LoginHistory>>();
 
         return services;
     }
