@@ -1,0 +1,32 @@
+@model HrSystem.Web.ViewModels.ShiftFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="StartTime" class="form-label"></label>
+            <input asp-for="StartTime" class="form-control" />
+            <span asp-validation-for="StartTime" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="EndTime" class="form-label"></label>
+            <input asp-for="EndTime" class="form-control" />
+            <span asp-validation-for="EndTime" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-check mt-4">
+            <input asp-for="IsOvernight" class="form-check-input" />
+            <label asp-for="IsOvernight" class="form-check-label"></label>
+        </div>
+    </div>
+</div>
+

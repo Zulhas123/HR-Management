@@ -1,0 +1,46 @@
+@model HrSystem.Web.ViewModels.AttendanceRecordFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="EmployeeId" class="form-label">Employee</label>
+            <select asp-for="EmployeeId" asp-items="Model.Employees" class="form-select"></select>
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Date" class="form-label"></label>
+            <input asp-for="Date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="ShiftId" class="form-label">Shift</label>
+            <select asp-for="ShiftId" asp-items="Model.Shifts" class="form-select">
+                <option value="">(none)</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="CheckInTime" class="form-label">Check In</label>
+            <input asp-for="CheckInTime" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="CheckOutTime" class="form-label">Check Out</label>
+            <input asp-for="CheckOutTime" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label"></label>
+            <input asp-for="Notes" class="form-control" />
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+

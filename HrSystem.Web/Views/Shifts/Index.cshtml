@@ -1,0 +1,38 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.Shift>
+
+@{
+    ViewData["Title"] = "Shifts";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Shifts</h1>
+    <a class="btn btn-primary" asp-action="Create">New Shift</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Overnight</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Name</td>
+                <td>@s.StartTime</td>
+                <td>@s.EndTime</td>
+                <td>@(s.IsOvernight ? "Yes" : "No")</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@s.Id">Edit</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@s.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
