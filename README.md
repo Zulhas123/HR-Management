@@ -30,6 +30,14 @@ Step 3 - Leave Management (MVP):
 - Basic approve/reject workflow
 - REST API endpoints for leave types + leave requests (+ approve/reject actions)
 
+Step 4 - Recruitment & Hiring (MVP):
+
+- Job Postings CRUD
+- Candidates CRUD
+- Job Applications CRUD (pipeline stage)
+- Interviews CRUD
+- REST API endpoints for all recruitment entities
+
 ## Solution Structure
 
 - `HrSystem.Domain`: Entities + repository abstractions
@@ -72,6 +80,12 @@ Step 3 - Leave Management (MVP):
    - `POST /api/leave-requests`
    - `POST /api/leave-requests/{id}/approve`
    - `POST /api/leave-requests/{id}/reject`
+
+6. Recruitment endpoints:
+   - `GET /api/job-postings`
+   - `GET /api/candidates`
+   - `GET /api/job-applications`
+   - `GET /api/interviews`
 
 ## Next Features (Planned)
 

@@ -20,6 +20,10 @@ public static class DependencyInjection
         services.AddScoped<ICrudService<AttendanceRecord>, CrudService<AttendanceRecord>>();
         services.AddScoped<ICrudService<LeaveType>, CrudService<LeaveType>>();
         services.AddScoped<ICrudService<LeaveRequest>, CrudService<LeaveRequest>>();
+        services.AddScoped<ICrudService<JobPosting>, CrudService<JobPosting>>();
+        services.AddScoped<ICrudService<Candidate>, CrudService<Candidate>>();
+        services.AddScoped<ICrudService<JobApplication>, CrudService<JobApplication>>();
+        services.AddScoped<ICrudService<Interview>, CrudService<Interview>>();
 
         return services;
     }

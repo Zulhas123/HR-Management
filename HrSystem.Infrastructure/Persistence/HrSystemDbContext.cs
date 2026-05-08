@@ -13,6 +13,10 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
     public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
     public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
     public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
+    public DbSet<JobPosting> JobPostings => Set<JobPosting>();
+    public DbSet<Candidate> Candidates => Set<Candidate>();
+    public DbSet<JobApplication> JobApplications => Set<JobApplication>();
+    public DbSet<Interview> Interviews => Set<Interview>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -111,6 +115,54 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
                 .WithMany()
                 .HasForeignKey(x => x.LeaveTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<JobPosting>(b =>
+        {
+            b.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            b.Property(x => x.Department).HasMaxLength(200);
+            b.Property(x => x.Location).HasMaxLength(200);
+            b.Property(x => x.EmploymentType).HasMaxLength(100);
+            b.Property(x => x.Description).HasMaxLength(2000);
+            b.HasIndex(x => x.Title);
+        });
+
+        modelBuilder.Entity<Candidate>(b =>
+        {
+            b.Property(x => x.FullName).HasMaxLength(200).IsRequired();
+            b.Property(x => x.Email).HasMaxLength(200);
+            b.Property(x => x.Phone).HasMaxLength(50);
+            b.Property(x => x.CvUrl).HasMaxLength(500);
+            b.Property(x => x.Notes).HasMaxLength(2000);
+            b.HasIndex(x => x.Email);
+        });
+
+        modelBuilder.Entity<JobApplication>(b =>
+        {
+            b.Property(x => x.Notes).HasMaxLength(2000);
+            b.HasIndex(x => new { x.JobPostingId, x.CandidateId }).IsUnique();
+
+            b.HasOne(x => x.JobPosting)
+                .WithMany()
+                .HasForeignKey(x => x.JobPostingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.Candidate)
+                .WithMany()
+                .HasForeignKey(x => x.CandidateId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Interview>(b =>
+        {
+            b.Property(x => x.Interviewer).HasMaxLength(200);
+            b.Property(x => x.Mode).HasMaxLength(50);
+            b.Property(x => x.Feedback).HasMaxLength(2000);
+
+            b.HasOne(x => x.JobApplication)
+                .WithMany()
+                .HasForeignKey(x => x.JobApplicationId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

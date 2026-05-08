@@ -1,0 +1,46 @@
+@model HrSystem.Web.ViewModels.InterviewFormVm
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <label asp-for="JobApplicationId" class="form-label">Application</label>
+            <select asp-for="JobApplicationId" asp-items="Model.Applications" class="form-select"></select>
+            <span asp-validation-for="JobApplicationId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ScheduledAtUtc" class="form-label">Scheduled (UTC)</label>
+            <input asp-for="ScheduledAtUtc" class="form-control" />
+            <span asp-validation-for="ScheduledAtUtc" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="Interviewer" class="form-label"></label>
+            <input asp-for="Interviewer" class="form-control" />
+            <span asp-validation-for="Interviewer" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Mode" class="form-label"></label>
+            <input asp-for="Mode" class="form-control" placeholder="Onsite/Online/Phone" />
+            <span asp-validation-for="Mode" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Result" class="form-label"></label>
+            <select asp-for="Result" class="form-select" asp-items="Html.GetEnumSelectList<HrSystem.Domain.Entities.InterviewResult>()"></select>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="mb-3">
+            <label asp-for="Feedback" class="form-label"></label>
+            <textarea asp-for="Feedback" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Feedback" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+

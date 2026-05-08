@@ -28,6 +28,10 @@ public static class DependencyInjection
         services.AddScoped<IRepository<AttendanceRecord>, AttendanceRecordRepository>();
         services.AddScoped<IRepository<LeaveType>, Repository<LeaveType>>();
         services.AddScoped<IRepository<LeaveRequest>, LeaveRequestRepository>();
+        services.AddScoped<IRepository<JobPosting>, Repository<JobPosting>>();
+        services.AddScoped<IRepository<Candidate>, Repository<Candidate>>();
+        services.AddScoped<IRepository<JobApplication>, JobApplicationRepository>();
+        services.AddScoped<IRepository<Interview>, InterviewRepository>();
 
         return services;
     }

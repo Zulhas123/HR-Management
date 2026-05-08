@@ -1,0 +1,33 @@
+@model HrSystem.Web.ViewModels.JobApplicationFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="JobPostingId" class="form-label">Job Posting</label>
+            <select asp-for="JobPostingId" asp-items="Model.JobPostings" class="form-select"></select>
+            <span asp-validation-for="JobPostingId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="CandidateId" class="form-label">Candidate</label>
+            <select asp-for="CandidateId" asp-items="Model.Candidates" class="form-select"></select>
+            <span asp-validation-for="CandidateId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="Stage" class="form-label"></label>
+            <select asp-for="Stage" class="form-select" asp-items="Html.GetEnumSelectList<HrSystem.Domain.Entities.ApplicationStage>()"></select>
+            <span asp-validation-for="Stage" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label"></label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+

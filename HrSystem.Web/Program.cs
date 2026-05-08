@@ -74,6 +74,19 @@ if (app.Environment.IsDevelopment())
             new HrSystem.Domain.Entities.LeaveType { Name = "Leave Without Pay", DefaultAnnualAllocation = 0, IsPaid = false });
     }
 
+    if (!await db.JobPostings.AnyAsync())
+    {
+        db.JobPostings.Add(new HrSystem.Domain.Entities.JobPosting
+        {
+            Title = "Software Engineer",
+            Department = "Engineering",
+            Location = "Dhaka",
+            EmploymentType = "Permanent",
+            Description = "MVP seeded job posting.",
+            IsOpen = true
+        });
+    }
+
     await db.SaveChangesAsync();
 }
 

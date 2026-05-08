@@ -1,0 +1,38 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.JobPosting>
+
+@{
+    ViewData["Title"] = "Job Postings";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Job Postings</h1>
+    <a class="btn btn-primary" asp-action="Create">New Job</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Department</th>
+            <th>Location</th>
+            <th>Open</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var j in Model)
+        {
+            <tr>
+                <td>@j.Title</td>
+                <td>@j.Department</td>
+                <td>@j.Location</td>
+                <td>@(j.IsOpen ? "Yes" : "No")</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@j.Id">Edit</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@j.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
