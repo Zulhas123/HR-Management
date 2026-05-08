@@ -25,9 +25,14 @@ public sealed class LeaveRequest : BaseEntity
 
     public string? Reason { get; set; }
 
+    // Multi-level approval (MVP)
+    public int ApprovalLevelsRequired { get; set; } = 1;
+    public int ApprovalLevelsApproved { get; set; }
+
     public LeaveRequestStatus Status { get; set; } = LeaveRequestStatus.Pending;
     public DateTime? DecisionAtUtc { get; set; }
     public string? DecisionBy { get; set; }
     public string? DecisionNote { get; set; }
-}
 
+    public List<LeaveApprovalStep> ApprovalSteps { get; set; } = [];
+}

@@ -1,0 +1,27 @@
+@model HrSystem.Web.ViewModels.EmployeeHandbookAcknowledgeVm
+
+@{
+    ViewData["Title"] = "Acknowledge Handbook";
+    var handbook = (HrSystem.Domain.Entities.EmployeeHandbook)ViewBag.Handbook;
+}
+
+<h1 class="h3">Acknowledge Handbook</h1>
+
+<div class="mb-3"><strong>@handbook.Title</strong></div>
+
+<form method="post" class="mt-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="EmployeeHandbookId" />
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="EmployeeId" class="form-label">Employee</label>
+                <select asp-for="EmployeeId" asp-items="Model.Employees" class="form-select"></select>
+                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Acknowledge</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+</form>
+

@@ -29,7 +29,12 @@ public sealed class LeaveTypesController(ICrudService<LeaveType> leaveTypes) : C
             Name = vm.Name,
             Description = vm.Description,
             DefaultAnnualAllocation = vm.DefaultAnnualAllocation,
-            IsPaid = vm.IsPaid
+            IsPaid = vm.IsPaid,
+            ApprovalLevelsRequired = vm.ApprovalLevelsRequired,
+            CountWeekendsAsLeave = vm.CountWeekendsAsLeave,
+            CountHolidaysAsLeave = vm.CountHolidaysAsLeave,
+            AllowEncashment = vm.AllowEncashment,
+            MaxEncashmentDaysPerYear = vm.MaxEncashmentDaysPerYear
         }, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -49,7 +54,12 @@ public sealed class LeaveTypesController(ICrudService<LeaveType> leaveTypes) : C
             Name = entity.Name,
             Description = entity.Description,
             DefaultAnnualAllocation = entity.DefaultAnnualAllocation,
-            IsPaid = entity.IsPaid
+            IsPaid = entity.IsPaid,
+            ApprovalLevelsRequired = entity.ApprovalLevelsRequired,
+            CountWeekendsAsLeave = entity.CountWeekendsAsLeave,
+            CountHolidaysAsLeave = entity.CountHolidaysAsLeave,
+            AllowEncashment = entity.AllowEncashment,
+            MaxEncashmentDaysPerYear = entity.MaxEncashmentDaysPerYear
         });
     }
 
@@ -77,6 +87,11 @@ public sealed class LeaveTypesController(ICrudService<LeaveType> leaveTypes) : C
         entity.Description = vm.Description;
         entity.DefaultAnnualAllocation = vm.DefaultAnnualAllocation;
         entity.IsPaid = vm.IsPaid;
+        entity.ApprovalLevelsRequired = vm.ApprovalLevelsRequired;
+        entity.CountWeekendsAsLeave = vm.CountWeekendsAsLeave;
+        entity.CountHolidaysAsLeave = vm.CountHolidaysAsLeave;
+        entity.AllowEncashment = vm.AllowEncashment;
+        entity.MaxEncashmentDaysPerYear = vm.MaxEncashmentDaysPerYear;
         await leaveTypes.UpdateAsync(entity, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -96,4 +111,3 @@ public sealed class LeaveTypesController(ICrudService<LeaveType> leaveTypes) : C
         return RedirectToAction(nameof(Index));
     }
 }
-

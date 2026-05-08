@@ -1,0 +1,15 @@
+@model HrSystem.Web.ViewModels.HolidayFormVm
+
+@{
+    ViewData["Title"] = "Create Holiday";
+}
+
+<h1 class="h3">Create Holiday</h1>
+
+<form method="post" class="mt-3">
+    @Html.AntiForgeryToken()
+    <partial name="_HolidayForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+</form>
+

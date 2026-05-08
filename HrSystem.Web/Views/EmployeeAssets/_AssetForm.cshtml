@@ -1,0 +1,64 @@
+@model HrSystem.Web.ViewModels.EmployeeAssetAssignmentVm
+@using HrSystem.Domain.Entities
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="EmployeeId" class="form-label">Employee</label>
+            <select asp-for="EmployeeId" asp-items="Model.Employees" class="form-select"></select>
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="AssetName" class="form-label">Asset name</label>
+            <input asp-for="AssetName" class="form-control" />
+            <span asp-validation-for="AssetName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="AssetTag" class="form-label">Asset tag</label>
+            <input asp-for="AssetTag" class="form-control" />
+            <span asp-validation-for="AssetTag" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="SerialNumber" class="form-label">Serial</label>
+            <input asp-for="SerialNumber" class="form-control" />
+            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="AssignedBy" class="form-label">Assigned by</label>
+            <input asp-for="AssignedBy" class="form-control" />
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="mb-3">
+            <label asp-for="ConditionOnAssign" class="form-label">Condition on assign</label>
+            <input asp-for="ConditionOnAssign" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" asp-items="Html.GetEnumSelectList<AssetAssignmentStatus>()" class="form-select"></select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ReturnedTo" class="form-label">Returned to</label>
+            <input asp-for="ReturnedTo" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ConditionOnReturn" class="form-label">Condition on return</label>
+            <input asp-for="ConditionOnReturn" class="form-control" />
+        </div>
+    </div>
+</div>
+

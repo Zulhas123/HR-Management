@@ -1,0 +1,119 @@
+@model HrSystem.Domain.Entities.EmployeeOnboarding
+
+@{
+    ViewData["Title"] = "Onboarding Details";
+    var employee = (HrSystem.Domain.Entities.Employee?)ViewBag.Employee;
+    var joiningForm = (HrSystem.Domain.Entities.EmployeeJoiningForm?)ViewBag.JoiningForm;
+    var docs = (IReadOnlyList<HrSystem.Domain.Entities.OnboardingDocumentChecklistItem>)ViewBag.DocumentChecklist;
+    var orient = (IReadOnlyList<HrSystem.Domain.Entities.OnboardingOrientationItem>)ViewBag.OrientationChecklist;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Onboarding #@Model.Id</h1>
+    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div><strong>Status:</strong> @Model.Status</div>
+        <div><strong>Employee:</strong> @(employee is null ? Model.EmployeeId.ToString() : $"{employee.EmployeeCode} - {employee.FirstName} {employee.LastName}")</div>
+        <div><strong>Created:</strong> @Model.CreatedAtUtc</div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Digital Joining Form</strong>
+        <a class="btn btn-sm btn-primary" asp-action="EditJoiningForm" asp-route-onboardingId="@Model.Id">@((joiningForm is null) ? "Create" : "Edit")</a>
+    </div>
+    <div class="card-body">
+        @if (joiningForm is null)
+        {
+            <div class="text-muted">No joining form saved.</div>
+        }
+        else
+        {
+            <div><strong>Join Date:</strong> @joiningForm.JoinDate</div>
+            <div><strong>DepartmentId:</strong> @joiningForm.DepartmentId</div>
+            <div><strong>DesignationId:</strong> @joiningForm.DesignationId</div>
+            <div><strong>EmploymentTypeId:</strong> @joiningForm.EmploymentTypeId</div>
+            @if (!string.IsNullOrWhiteSpace(joiningForm.Notes))
+            {
+                <div><strong>Notes:</strong> @joiningForm.Notes</div>
+            }
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Document Checklist</strong>
+        <a class="btn btn-sm btn-primary" asp-action="AddDocumentItem" asp-route-onboardingId="@Model.Id">Add Item</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Required</th>
+                    <th>Provided</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in docs)
+                {
+                    <tr>
+                        <td>@d.Name</td>
+                        <td>@(d.IsRequired ? "Yes" : "No")</td>
+                        <td>@(d.IsProvided ? "Yes" : "No")</td>
+                        <td class="text-end">
+                            <form method="post" asp-action="ToggleDocumentProvided" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@d.Id" />
+                                <input type="hidden" name="onboardingId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Toggle</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Orientation Checklist</strong>
+        <a class="btn btn-sm btn-primary" asp-action="AddOrientationItem" asp-route-onboardingId="@Model.Id">Add Item</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Completed</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var it in orient)
+                {
+                    <tr>
+                        <td>@it.Title</td>
+                        <td>@(it.IsCompleted ? "Yes" : "No")</td>
+                        <td class="text-end">
+                            <form method="post" asp-action="ToggleOrientationCompleted" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@it.Id" />
+                                <input type="hidden" name="onboardingId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Toggle</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

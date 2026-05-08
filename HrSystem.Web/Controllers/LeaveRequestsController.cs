@@ -9,7 +9,9 @@ namespace HrSystem.Web.Controllers;
 public sealed class LeaveRequestsController(
     ICrudService<LeaveRequest> leaveRequests,
     ICrudService<Employee> employees,
-    ICrudService<LeaveType> leaveTypes) : Controller
+    ICrudService<LeaveType> leaveTypes,
+    ILeaveCalendarService calendar,
+    ILeaveBalanceService balances) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
@@ -43,7 +45,19 @@ public sealed class LeaveRequestsController(
             return View(vm);
         }
 
-        var totalDays = (decimal)(end.DayNumber - start.DayNumber + 1);
+        var leaveType = await leaveTypes.GetByIdAsync(vm.LeaveTypeId, cancellationToken);
+        if (leaveType is null)
+        {
+            return BadRequest("Invalid leave type.");
+        }
+
+        var totalDays = await calendar.CalculateChargeableDaysAsync(start, end, leaveType, cancellationToken);
+        if (totalDays <= 0)
+        {
+            ModelState.AddModelError(nameof(vm.EndDate), "Selected dates contain no chargeable leave days (weekends/holidays excluded).");
+            await PopulateLookupsAsync(vm, cancellationToken);
+            return View(vm);
+        }
 
         await leaveRequests.CreateAsync(new LeaveRequest
         {
@@ -53,7 +67,9 @@ public sealed class LeaveRequestsController(
             EndDate = end,
             TotalDays = totalDays,
             Reason = vm.Reason,
-            Status = LeaveRequestStatus.Pending
+            Status = LeaveRequestStatus.Pending,
+            ApprovalLevelsRequired = Math.Max(1, leaveType.ApprovalLevelsRequired),
+            ApprovalLevelsApproved = 0
         }, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -70,6 +86,11 @@ public sealed class LeaveRequestsController(
         if (entity.Status != LeaveRequestStatus.Pending)
         {
             return BadRequest("Only pending requests can be edited.");
+        }
+
+        if (entity.ApprovalLevelsApproved > 0)
+        {
+            return BadRequest("Requests cannot be edited after approvals have started.");
         }
 
         var vm = new LeaveRequestFormVm
@@ -112,6 +133,11 @@ public sealed class LeaveRequestsController(
             return BadRequest("Only pending requests can be edited.");
         }
 
+        if (entity.ApprovalLevelsApproved > 0)
+        {
+            return BadRequest("Requests cannot be edited after approvals have started.");
+        }
+
         var start = DateOnly.FromDateTime(vm.StartDate);
         var end = DateOnly.FromDateTime(vm.EndDate);
         if (end < start)
@@ -125,7 +151,19 @@ public sealed class LeaveRequestsController(
         entity.LeaveTypeId = vm.LeaveTypeId;
         entity.StartDate = start;
         entity.EndDate = end;
-        entity.TotalDays = (decimal)(end.DayNumber - start.DayNumber + 1);
+        var leaveType = await leaveTypes.GetByIdAsync(vm.LeaveTypeId, cancellationToken);
+        if (leaveType is null)
+        {
+            return BadRequest("Invalid leave type.");
+        }
+
+        entity.TotalDays = await calendar.CalculateChargeableDaysAsync(start, end, leaveType, cancellationToken);
+        if (entity.TotalDays <= 0)
+        {
+            ModelState.AddModelError(nameof(vm.EndDate), "Selected dates contain no chargeable leave days (weekends/holidays excluded).");
+            await PopulateLookupsAsync(vm, cancellationToken);
+            return View(vm);
+        }
         entity.Reason = vm.Reason;
         await leaveRequests.UpdateAsync(entity, cancellationToken);
 
@@ -153,10 +191,41 @@ public sealed class LeaveRequestsController(
             return BadRequest("Only pending requests can be approved.");
         }
 
-        entity.Status = LeaveRequestStatus.Approved;
-        entity.DecisionAtUtc = DateTime.UtcNow;
-        entity.DecisionBy = User?.Identity?.Name ?? "system";
-        entity.DecisionNote = vm.DecisionNote;
+        var nextLevel = entity.ApprovalLevelsApproved + 1;
+        if (nextLevel > Math.Max(1, entity.ApprovalLevelsRequired))
+        {
+            return BadRequest("Approval levels already completed.");
+        }
+
+        entity.ApprovalSteps.Add(new LeaveApprovalStep
+        {
+            LeaveRequestId = entity.Id,
+            Level = nextLevel,
+            Decision = LeaveApprovalDecision.Approved,
+            DecidedAtUtc = DateTimeOffset.UtcNow,
+            DecidedBy = User?.Identity?.Name ?? "system",
+            Note = vm.DecisionNote
+        });
+
+        entity.ApprovalLevelsApproved = nextLevel;
+
+        if (entity.ApprovalLevelsApproved >= Math.Max(1, entity.ApprovalLevelsRequired))
+        {
+            try
+            {
+                await balances.ApplyApprovedLeaveAsync(entity, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            entity.Status = LeaveRequestStatus.Approved;
+            entity.DecisionAtUtc = DateTime.UtcNow;
+            entity.DecisionBy = User?.Identity?.Name ?? "system";
+            entity.DecisionNote = vm.DecisionNote;
+        }
+
         await leaveRequests.UpdateAsync(entity, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -183,10 +252,27 @@ public sealed class LeaveRequestsController(
             return BadRequest("Only pending requests can be rejected.");
         }
 
+        var nextLevel = entity.ApprovalLevelsApproved + 1;
+        if (nextLevel > Math.Max(1, entity.ApprovalLevelsRequired))
+        {
+            nextLevel = Math.Max(1, entity.ApprovalLevelsRequired);
+        }
+
+        entity.ApprovalSteps.Add(new LeaveApprovalStep
+        {
+            LeaveRequestId = entity.Id,
+            Level = nextLevel,
+            Decision = LeaveApprovalDecision.Rejected,
+            DecidedAtUtc = DateTimeOffset.UtcNow,
+            DecidedBy = User?.Identity?.Name ?? "system",
+            Note = vm.DecisionNote
+        });
+
         entity.Status = LeaveRequestStatus.Rejected;
         entity.DecisionAtUtc = DateTime.UtcNow;
         entity.DecisionBy = User?.Identity?.Name ?? "system";
         entity.DecisionNote = vm.DecisionNote;
+
         await leaveRequests.UpdateAsync(entity, cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -217,4 +303,3 @@ public sealed class LeaveRequestsController(
             .ToList();
     }
 }
-

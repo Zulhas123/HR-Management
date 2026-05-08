@@ -1,0 +1,34 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.EmployeeHandbook>
+
+@{
+    ViewData["Title"] = "Employee Handbooks";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Employee Handbooks</h1>
+    <a class="btn btn-primary" asp-action="Create">Upload Handbook</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Published</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var h in Model)
+        {
+            <tr>
+                <td>@h.Title</td>
+                <td>@h.PublishedAtUtc</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" href="@h.FilePath" target="_blank">Open</a>
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Acknowledge" asp-route-handbookId="@h.Id">Acknowledge</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

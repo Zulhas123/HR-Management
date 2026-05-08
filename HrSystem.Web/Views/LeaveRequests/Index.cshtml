@@ -18,6 +18,7 @@
             <th>To</th>
             <th>Days</th>
             <th>Status</th>
+            <th>Approvals</th>
             <th class="text-end">Actions</th>
         </tr>
     </thead>
@@ -31,10 +32,14 @@
                 <td>@r.EndDate</td>
                 <td>@r.TotalDays</td>
                 <td>@r.Status</td>
+                <td>@r.ApprovalLevelsApproved/@(Math.Max(1, r.ApprovalLevelsRequired))</td>
                 <td class="text-end">
                     @if (r.Status == HrSystem.Domain.Entities.LeaveRequestStatus.Pending)
                     {
-                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                        @if (r.ApprovalLevelsApproved == 0)
+                        {
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                        }
                         <a class="btn btn-sm btn-outline-success" asp-action="Approve" asp-route-id="@r.Id">Approve</a>
                         <a class="btn btn-sm btn-outline-warning" asp-action="Reject" asp-route-id="@r.Id">Reject</a>
                     }
@@ -44,4 +49,3 @@
         }
     </tbody>
 </table>
-

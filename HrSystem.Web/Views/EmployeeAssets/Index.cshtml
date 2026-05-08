@@ -1,0 +1,51 @@
+@model IReadOnlyList<HrSystem.Domain.Entities.EmployeeAssetAssignment>
+
+@{
+    ViewData["Title"] = "Asset Assignments";
+    int? employeeId = (int?)ViewBag.EmployeeId;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Asset Assignments</h1>
+    <a class="btn btn-primary" asp-action="Create" asp-route-employeeId="@employeeId">Assign Asset</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>EmployeeId</th>
+            <th>Asset</th>
+            <th>Tag</th>
+            <th>Serial</th>
+            <th>Status</th>
+            <th>Assigned</th>
+            <th>Returned</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.EmployeeId</td>
+                <td>@a.AssetName</td>
+                <td>@a.AssetTag</td>
+                <td>@a.SerialNumber</td>
+                <td>@a.Status</td>
+                <td>@a.AssignedAtUtc</td>
+                <td>@a.ReturnedAtUtc</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@a.Id">Edit</a>
+                    @if (a.Status == HrSystem.Domain.Entities.AssetAssignmentStatus.Assigned)
+                    {
+                        <form method="post" asp-action="MarkReturned" asp-route-id="@a.Id" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-success">Mark Returned</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

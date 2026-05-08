@@ -28,5 +28,36 @@
             <label asp-for="IsPaid" class="form-check-label">Paid Leave</label>
         </div>
     </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="ApprovalLevelsRequired" class="form-label">Approval levels required</label>
+            <input asp-for="ApprovalLevelsRequired" class="form-control" />
+            <span asp-validation-for="ApprovalLevelsRequired" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-check mt-4">
+            <input asp-for="CountWeekendsAsLeave" class="form-check-input" />
+            <label asp-for="CountWeekendsAsLeave" class="form-check-label">Count weekends</label>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-check mt-4">
+            <input asp-for="CountHolidaysAsLeave" class="form-check-input" />
+            <label asp-for="CountHolidaysAsLeave" class="form-check-label">Count holidays</label>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-check mt-4">
+            <input asp-for="AllowEncashment" class="form-check-input" />
+            <label asp-for="AllowEncashment" class="form-check-label">Allow encashment</label>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label asp-for="MaxEncashmentDaysPerYear" class="form-label">Max encashment days/year</label>
+            <input asp-for="MaxEncashmentDaysPerYear" class="form-control" />
+            <span asp-validation-for="MaxEncashmentDaysPerYear" class="text-danger"></span>
+        </div>
+    </div>
 </div>
-

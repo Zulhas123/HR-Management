@@ -1,0 +1,166 @@
+@model HrSystem.Domain.Entities.EmployeeOffboarding
+@using HrSystem.Domain.Entities
+
+@{
+    ViewData["Title"] = "Offboarding Details";
+    var employee = (Employee?)ViewBag.Employee;
+    var interview = (ExitInterview?)ViewBag.ExitInterview;
+    var clearanceItems = (IReadOnlyList<OffboardingClearanceItem>)ViewBag.ClearanceItems;
+    var settlement = (FinalSettlement?)ViewBag.Settlement;
+    var outstandingAssets = (IReadOnlyList<EmployeeAssetAssignment>)ViewBag.OutstandingAssets;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Offboarding #@Model.Id</h1>
+    <div>
+        <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a class="btn btn-outline-primary" asp-action="ExperienceCertificate" asp-route-offboardingId="@Model.Id" target="_blank">Experience Certificate</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div><strong>Status:</strong> @Model.Status</div>
+        <div><strong>Employee:</strong> @(employee is null ? Model.EmployeeId.ToString() : $"{employee.EmployeeCode} - {employee.FirstName} {employee.LastName}")</div>
+        <div><strong>Last Working Day:</strong> @Model.LastWorkingDay</div>
+        @if (!string.IsNullOrWhiteSpace(Model.Reason))
+        {
+            <div><strong>Reason:</strong> @Model.Reason</div>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Exit Interview</strong>
+        <a class="btn btn-sm btn-primary" asp-action="EditExitInterview" asp-route-offboardingId="@Model.Id">@((interview is null) ? "Create" : "Edit")</a>
+    </div>
+    <div class="card-body">
+        @if (interview is null)
+        {
+            <div class="text-muted">No exit interview recorded.</div>
+        }
+        else
+        {
+            <div><strong>Date:</strong> @interview.InterviewDate</div>
+            <div><strong>Interviewer:</strong> @interview.Interviewer</div>
+            <div><strong>Notes:</strong> @interview.Notes</div>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Clearance Workflow</strong>
+        <a class="btn btn-sm btn-primary" asp-action="AddClearanceItem" asp-route-offboardingId="@Model.Id">Add Department</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Decision</th>
+                    <th>Note</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in clearanceItems)
+                {
+                    <tr>
+                        <td>@c.DepartmentName</td>
+                        <td>@c.Decision</td>
+                        <td>@c.Note</td>
+                        <td class="text-end">
+                            <form method="post" asp-action="SetClearanceDecision" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <input type="hidden" name="offboardingId" value="@Model.Id" />
+                                <input type="hidden" name="decision" value="@ClearanceDecision.Cleared" />
+                                <button type="submit" class="btn btn-sm btn-outline-success">Clear</button>
+                            </form>
+                            <form method="post" asp-action="SetClearanceDecision" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <input type="hidden" name="offboardingId" value="@Model.Id" />
+                                <input type="hidden" name="decision" value="@ClearanceDecision.Blocked" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Block</button>
+                            </form>
+                            <form method="post" asp-action="SetClearanceDecision" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <input type="hidden" name="offboardingId" value="@Model.Id" />
+                                <input type="hidden" name="decision" value="@ClearanceDecision.Pending" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Reset</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Asset Return Tracking</strong>
+        <a class="btn btn-sm btn-outline-secondary" asp-controller="EmployeeAssets" asp-action="Index" asp-route-employeeId="@Model.EmployeeId">View All</a>
+    </div>
+    <div class="card-body">
+        @if (!outstandingAssets.Any())
+        {
+            <div class="text-muted">No outstanding assets.</div>
+        }
+        else
+        {
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Tag</th>
+                        <th>Serial</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in outstandingAssets)
+                    {
+                        <tr>
+                            <td>@a.AssetName</td>
+                            <td>@a.AssetTag</td>
+                            <td>@a.SerialNumber</td>
+                            <td class="text-end">
+                                <form method="post" asp-controller="EmployeeAssets" asp-action="MarkReturned" asp-route-id="@a.Id" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Mark Returned</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Final Settlement</strong>
+        <a class="btn btn-sm btn-primary" asp-action="EditSettlement" asp-route-offboardingId="@Model.Id">@((settlement is null) ? "Create" : "Edit")</a>
+    </div>
+    <div class="card-body">
+        @if (settlement is null)
+        {
+            <div class="text-muted">No settlement prepared.</div>
+        }
+        else
+        {
+            <div><strong>Total payable:</strong> @settlement.TotalPayable</div>
+            <div><strong>Total deductions:</strong> @settlement.TotalDeductions</div>
+            <div><strong>Net payable:</strong> @settlement.NetPayable</div>
+            <div><strong>Prepared by:</strong> @settlement.PreparedBy</div>
+            <div><strong>Notes:</strong> @settlement.Notes</div>
+        }
+    </div>
+</div>
+

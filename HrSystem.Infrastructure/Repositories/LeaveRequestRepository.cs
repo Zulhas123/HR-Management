@@ -16,6 +16,6 @@ public sealed class LeaveRequestRepository : Repository<LeaveRequest>
     protected override IQueryable<LeaveRequest> Query() =>
         _dbContext.LeaveRequests
             .Include(x => x.Employee)
-            .Include(x => x.LeaveType);
+            .Include(x => x.LeaveType)
+            .Include(x => x.ApprovalSteps);
 }
-

@@ -8,7 +8,11 @@ namespace HrSystem.Web.Controllers.Api;
 [ApiController]
 [Route("api/leave-requests")]
 [Authorize]
-public sealed class LeaveRequestsApiController(ICrudService<LeaveRequest> leaveRequests) : ControllerBase
+public sealed class LeaveRequestsApiController(
+    ICrudService<LeaveRequest> leaveRequests,
+    ICrudService<LeaveType> leaveTypes,
+    ILeaveCalendarService calendar,
+    ILeaveBalanceService balances) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<LeaveRequest>>> List(CancellationToken cancellationToken) =>
@@ -29,9 +33,19 @@ public sealed class LeaveRequestsApiController(ICrudService<LeaveRequest> leaveR
             return BadRequest("EndDate must be on or after StartDate.");
         }
 
-        request.TotalDays = request.TotalDays <= 0
-            ? (decimal)(request.EndDate.DayNumber - request.StartDate.DayNumber + 1)
-            : request.TotalDays;
+        var leaveType = await leaveTypes.GetByIdAsync(request.LeaveTypeId, cancellationToken);
+        if (leaveType is null)
+        {
+            return BadRequest("Invalid LeaveTypeId.");
+        }
+
+        request.TotalDays = await calendar.CalculateChargeableDaysAsync(request.StartDate, request.EndDate, leaveType, cancellationToken);
+        if (request.TotalDays <= 0)
+        {
+            return BadRequest("Selected dates contain no chargeable leave days (weekends/holidays excluded).");
+        }
+        request.ApprovalLevelsRequired = Math.Max(1, leaveType.ApprovalLevelsRequired);
+        request.ApprovalLevelsApproved = 0;
 
         request.Status = LeaveRequestStatus.Pending;
         request.DecisionAtUtc = null;
@@ -50,7 +64,42 @@ public sealed class LeaveRequestsApiController(ICrudService<LeaveRequest> leaveR
             return BadRequest();
         }
 
-        await leaveRequests.UpdateAsync(request, cancellationToken);
+        var existing = await leaveRequests.GetByIdAsync(id, cancellationToken);
+        if (existing is null)
+        {
+            return NotFound();
+        }
+
+        if (existing.Status != LeaveRequestStatus.Pending || existing.ApprovalLevelsApproved > 0)
+        {
+            return BadRequest("Only pending requests with no approvals can be edited.");
+        }
+
+        if (request.EndDate < request.StartDate)
+        {
+            return BadRequest("EndDate must be on or after StartDate.");
+        }
+
+        var leaveType = await leaveTypes.GetByIdAsync(request.LeaveTypeId, cancellationToken);
+        if (leaveType is null)
+        {
+            return BadRequest("Invalid LeaveTypeId.");
+        }
+
+        existing.EmployeeId = request.EmployeeId;
+        existing.LeaveTypeId = request.LeaveTypeId;
+        existing.StartDate = request.StartDate;
+        existing.EndDate = request.EndDate;
+        existing.TotalDays = await calendar.CalculateChargeableDaysAsync(request.StartDate, request.EndDate, leaveType, cancellationToken);
+        if (existing.TotalDays <= 0)
+        {
+            return BadRequest("Selected dates contain no chargeable leave days (weekends/holidays excluded).");
+        }
+        existing.Reason = request.Reason;
+        existing.ApprovalLevelsRequired = Math.Max(1, leaveType.ApprovalLevelsRequired);
+        existing.ApprovalLevelsApproved = 0;
+
+        await leaveRequests.UpdateAsync(existing, cancellationToken);
         return NoContent();
     }
 
@@ -68,10 +117,41 @@ public sealed class LeaveRequestsApiController(ICrudService<LeaveRequest> leaveR
             return BadRequest("Only pending requests can be approved.");
         }
 
-        entity.Status = LeaveRequestStatus.Approved;
-        entity.DecisionAtUtc = DateTime.UtcNow;
-        entity.DecisionBy = User?.Identity?.Name ?? "system";
-        entity.DecisionNote = note;
+        var nextLevel = entity.ApprovalLevelsApproved + 1;
+        if (nextLevel > Math.Max(1, entity.ApprovalLevelsRequired))
+        {
+            return BadRequest("Approval levels already completed.");
+        }
+
+        entity.ApprovalSteps.Add(new LeaveApprovalStep
+        {
+            LeaveRequestId = entity.Id,
+            Level = nextLevel,
+            Decision = LeaveApprovalDecision.Approved,
+            DecidedAtUtc = DateTimeOffset.UtcNow,
+            DecidedBy = User?.Identity?.Name ?? "system",
+            Note = note
+        });
+
+        entity.ApprovalLevelsApproved = nextLevel;
+
+        if (entity.ApprovalLevelsApproved >= Math.Max(1, entity.ApprovalLevelsRequired))
+        {
+            try
+            {
+                await balances.ApplyApprovedLeaveAsync(entity, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            entity.Status = LeaveRequestStatus.Approved;
+            entity.DecisionAtUtc = DateTime.UtcNow;
+            entity.DecisionBy = User?.Identity?.Name ?? "system";
+            entity.DecisionNote = note;
+        }
+
         await leaveRequests.UpdateAsync(entity, cancellationToken);
         return NoContent();
     }
@@ -90,6 +170,22 @@ public sealed class LeaveRequestsApiController(ICrudService<LeaveRequest> leaveR
             return BadRequest("Only pending requests can be rejected.");
         }
 
+        var nextLevel = entity.ApprovalLevelsApproved + 1;
+        if (nextLevel > Math.Max(1, entity.ApprovalLevelsRequired))
+        {
+            nextLevel = Math.Max(1, entity.ApprovalLevelsRequired);
+        }
+
+        entity.ApprovalSteps.Add(new LeaveApprovalStep
+        {
+            LeaveRequestId = entity.Id,
+            Level = nextLevel,
+            Decision = LeaveApprovalDecision.Rejected,
+            DecidedAtUtc = DateTimeOffset.UtcNow,
+            DecidedBy = User?.Identity?.Name ?? "system",
+            Note = note
+        });
+
         entity.Status = LeaveRequestStatus.Rejected;
         entity.DecisionAtUtc = DateTime.UtcNow;
         entity.DecisionBy = User?.Identity?.Name ?? "system";
@@ -105,4 +201,3 @@ public sealed class LeaveRequestsApiController(ICrudService<LeaveRequest> leaveR
         return NoContent();
     }
 }
-

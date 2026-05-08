@@ -1,0 +1,16 @@
+@model HrSystem.Web.ViewModels.EmployeeAssetAssignmentVm
+
+@{
+    ViewData["Title"] = "Edit Asset Assignment";
+}
+
+<h1 class="h3">Edit Asset Assignment</h1>
+
+<form method="post" class="mt-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <partial name="_AssetForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-outline-secondary" asp-action="Index" asp-route-employeeId="@Model.EmployeeId">Cancel</a>
+</form>
+

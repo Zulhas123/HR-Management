@@ -1,0 +1,20 @@
+@model HrSystem.Web.ViewModels.LeaveDecisionVm
+
+@{
+    ViewData["Title"] = "Approve Encashment";
+}
+
+<h1 class="h3">Approve Encashment Request</h1>
+
+<form method="post" class="mt-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="DecisionNote" class="form-label">Note</label>
+        <input asp-for="DecisionNote" class="form-control" />
+        <span asp-validation-for="DecisionNote" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Approve</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+</form>
+

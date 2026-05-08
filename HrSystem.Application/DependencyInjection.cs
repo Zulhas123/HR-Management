@@ -13,6 +13,8 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IAttendancePunchService, AttendancePunchService>();
         services.AddScoped<IAttendanceProcessingService, AttendanceProcessingService>();
+        services.AddScoped<ILeaveCalendarService, LeaveCalendarService>();
+        services.AddScoped<ILeaveBalanceService, LeaveBalanceService>();
 
         // Convenience typed registrations for common lookups
         services.AddScoped<ICrudService<Department>, CrudService<Department>>();
@@ -35,6 +37,17 @@ public static class DependencyInjection
         services.AddScoped<ICrudService<Interview>, CrudService<Interview>>();
         services.AddScoped<ICrudService<Religion>, CrudService<Religion>>();
         services.AddScoped<ICrudService<BloodGroup>, CrudService<BloodGroup>>();
+        services.AddScoped<ICrudService<EmployeeOnboarding>, CrudService<EmployeeOnboarding>>();
+        services.AddScoped<ICrudService<EmployeeJoiningForm>, CrudService<EmployeeJoiningForm>>();
+        services.AddScoped<ICrudService<OnboardingDocumentChecklistItem>, CrudService<OnboardingDocumentChecklistItem>>();
+        services.AddScoped<ICrudService<OnboardingOrientationItem>, CrudService<OnboardingOrientationItem>>();
+        services.AddScoped<ICrudService<EmployeeAssetAssignment>, CrudService<EmployeeAssetAssignment>>();
+        services.AddScoped<ICrudService<EmployeeHandbook>, CrudService<EmployeeHandbook>>();
+        services.AddScoped<ICrudService<EmployeeHandbookAcknowledgement>, CrudService<EmployeeHandbookAcknowledgement>>();
+        services.AddScoped<ICrudService<EmployeeOffboarding>, CrudService<EmployeeOffboarding>>();
+        services.AddScoped<ICrudService<ExitInterview>, CrudService<ExitInterview>>();
+        services.AddScoped<ICrudService<OffboardingClearanceItem>, CrudService<OffboardingClearanceItem>>();
+        services.AddScoped<ICrudService<FinalSettlement>, CrudService<FinalSettlement>>();
 
         return services;
     }

@@ -49,13 +49,25 @@ Attendance (MVP):
 Leave Management (MVP):
 
 - Leave Types (MVC CRUD; common types seeded in Development)
-- Leave Requests (MVC CRUD) + basic approve/reject flow
-- REST API: Leave Types + Leave Requests CRUD (+ approve/reject) (JWT protected)
+- Leave policy setup (per leave type: approval levels, weekend/holiday counting, encashment settings)
+- Holiday calendar (MVC CRUD) + Weekend configuration (MVC)
+- Leave Requests (MVC CRUD) + multi-level approval flow (approve advances levels until final approval)
+- Leave balance tracking (per employee/year/leave type) + balance checks on final approval
+- Leave encashment requests (MVC) + approve/reject + mark paid
+- REST API: Leave Types + Leave Requests (+ approve/reject) (JWT protected)
+- REST API: Holidays, Weekends, Leave Balances, Leave Encashments (JWT protected)
 
 Recruitment & Hiring (MVP):
 
 - Job postings, candidates, applications (pipeline stage), interviews (MVC CRUD)
 - REST API: Job postings, candidates, applications, interviews CRUD (JWT protected)
+
+Onboarding & Offboarding (MVP):
+
+- Onboarding: digital joining form (department/designation/employment type assignment), document checklist, orientation checklist
+- Asset assignment + asset return tracking
+- Employee handbook upload + acknowledgement
+- Offboarding: exit interview, clearance workflow, final settlement, experience certificate (printable)
 
 ## Prerequisites
 
@@ -100,8 +112,9 @@ Endpoints:
 
 - Employees: `GET/POST /api/employees`, `GET/PUT/DELETE /api/employees/{id}`
 - Attendance: `GET/POST /api/attendance`, `POST /api/attendance/punch`, `POST /api/attendance/process`, `GET/POST /api/shifts`
-- Leave: `GET/POST /api/leave-types`, `GET/POST /api/leave-requests`, `POST /api/leave-requests/{id}/approve`, `POST /api/leave-requests/{id}/reject`
+- Leave: `GET/POST /api/leave-types`, `GET/POST /api/leave-requests`, `POST /api/leave-requests/{id}/approve`, `POST /api/leave-requests/{id}/reject`, `GET/POST /api/holidays`, `GET /api/weekends/current`, `GET /api/leave-balances/{employeeId}/{year}`, `GET/POST /api/leave-encashments`
 - Recruitment: `GET/POST /api/job-postings`, `GET/POST /api/candidates`, `GET/POST /api/job-applications`, `GET/POST /api/interviews`
+- Onboarding/Offboarding: `GET/POST /api/onboardings`, `GET/POST /api/offboardings`, `GET/POST /api/employee-assets`
 
 Attendance punch notes:
 

@@ -20,6 +20,22 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
     public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
     public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
     public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
+    public DbSet<LeaveApprovalStep> LeaveApprovalSteps => Set<LeaveApprovalStep>();
+    public DbSet<LeaveBalance> LeaveBalances => Set<LeaveBalance>();
+    public DbSet<Holiday> Holidays => Set<Holiday>();
+    public DbSet<WeekendConfiguration> WeekendConfigurations => Set<WeekendConfiguration>();
+    public DbSet<LeaveEncashmentRequest> LeaveEncashmentRequests => Set<LeaveEncashmentRequest>();
+    public DbSet<EmployeeOnboarding> EmployeeOnboardings => Set<EmployeeOnboarding>();
+    public DbSet<EmployeeJoiningForm> EmployeeJoiningForms => Set<EmployeeJoiningForm>();
+    public DbSet<OnboardingDocumentChecklistItem> OnboardingDocumentChecklistItems => Set<OnboardingDocumentChecklistItem>();
+    public DbSet<OnboardingOrientationItem> OnboardingOrientationItems => Set<OnboardingOrientationItem>();
+    public DbSet<EmployeeAssetAssignment> EmployeeAssetAssignments => Set<EmployeeAssetAssignment>();
+    public DbSet<EmployeeHandbook> EmployeeHandbooks => Set<EmployeeHandbook>();
+    public DbSet<EmployeeHandbookAcknowledgement> EmployeeHandbookAcknowledgements => Set<EmployeeHandbookAcknowledgement>();
+    public DbSet<EmployeeOffboarding> EmployeeOffboardings => Set<EmployeeOffboarding>();
+    public DbSet<ExitInterview> ExitInterviews => Set<ExitInterview>();
+    public DbSet<OffboardingClearanceItem> OffboardingClearanceItems => Set<OffboardingClearanceItem>();
+    public DbSet<FinalSettlement> FinalSettlements => Set<FinalSettlement>();
     public DbSet<JobPosting> JobPostings => Set<JobPosting>();
     public DbSet<Candidate> Candidates => Set<Candidate>();
     public DbSet<JobApplication> JobApplications => Set<JobApplication>();
@@ -256,6 +272,7 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
             b.Property(x => x.Description).HasMaxLength(500);
             b.HasIndex(x => x.Name).IsUnique();
             b.Property(x => x.DefaultAnnualAllocation).HasColumnType("decimal(18,2)");
+            b.Property(x => x.MaxEncashmentDaysPerYear).HasColumnType("decimal(18,2)");
         });
 
         modelBuilder.Entity<LeaveRequest>(b =>
@@ -276,6 +293,221 @@ public sealed class HrSystemDbContext(DbContextOptions<HrSystemDbContext> option
                 .WithMany()
                 .HasForeignKey(x => x.LeaveTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<LeaveApprovalStep>(b =>
+        {
+            b.Property(x => x.DecidedBy).HasMaxLength(200);
+            b.Property(x => x.Note).HasMaxLength(500);
+            b.HasIndex(x => new { x.LeaveRequestId, x.Level }).IsUnique();
+
+            b.HasOne(x => x.LeaveRequest)
+                .WithMany(r => r.ApprovalSteps)
+                .HasForeignKey(x => x.LeaveRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LeaveBalance>(b =>
+        {
+            b.Property(x => x.AllocatedDays).HasColumnType("decimal(18,2)");
+            b.Property(x => x.UsedDays).HasColumnType("decimal(18,2)");
+            b.Property(x => x.EncashmentDays).HasColumnType("decimal(18,2)");
+            b.HasIndex(x => new { x.EmployeeId, x.LeaveTypeId, x.Year }).IsUnique();
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.LeaveType)
+                .WithMany()
+                .HasForeignKey(x => x.LeaveTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Holiday>(b =>
+        {
+            b.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            b.HasIndex(x => x.Date).IsUnique();
+        });
+
+        modelBuilder.Entity<WeekendConfiguration>(b =>
+        {
+            // allow multiple configs if needed later; MVP uses the latest
+        });
+
+        modelBuilder.Entity<LeaveEncashmentRequest>(b =>
+        {
+            b.Property(x => x.DaysRequested).HasColumnType("decimal(18,2)");
+            b.Property(x => x.DecisionBy).HasMaxLength(200);
+            b.Property(x => x.DecisionNote).HasMaxLength(500);
+            b.HasIndex(x => new { x.EmployeeId, x.LeaveTypeId, x.Year });
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.LeaveType)
+                .WithMany()
+                .HasForeignKey(x => x.LeaveTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<EmployeeOnboarding>(b =>
+        {
+            b.HasIndex(x => x.EmployeeId);
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<EmployeeJoiningForm>(b =>
+        {
+            b.Property(x => x.Notes).HasMaxLength(2000);
+            b.HasIndex(x => x.EmployeeOnboardingId).IsUnique();
+
+            b.HasOne(x => x.EmployeeOnboarding)
+                .WithOne(o => o.JoiningForm)
+                .HasForeignKey<EmployeeJoiningForm>(x => x.EmployeeOnboardingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.Department)
+                .WithMany()
+                .HasForeignKey(x => x.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.Designation)
+                .WithMany()
+                .HasForeignKey(x => x.DesignationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.EmploymentType)
+                .WithMany()
+                .HasForeignKey(x => x.EmploymentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<OnboardingDocumentChecklistItem>(b =>
+        {
+            b.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            b.Property(x => x.Notes).HasMaxLength(1000);
+            b.HasIndex(x => new { x.EmployeeOnboardingId, x.Name });
+
+            b.HasOne(x => x.EmployeeOnboarding)
+                .WithMany(o => o.DocumentChecklist)
+                .HasForeignKey(x => x.EmployeeOnboardingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.EmployeeDocument)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeDocumentId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<OnboardingOrientationItem>(b =>
+        {
+            b.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            b.Property(x => x.CompletedBy).HasMaxLength(200);
+            b.HasIndex(x => new { x.EmployeeOnboardingId, x.Title });
+
+            b.HasOne(x => x.EmployeeOnboarding)
+                .WithMany(o => o.OrientationChecklist)
+                .HasForeignKey(x => x.EmployeeOnboardingId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<EmployeeAssetAssignment>(b =>
+        {
+            b.Property(x => x.AssetName).HasMaxLength(200).IsRequired();
+            b.Property(x => x.AssetTag).HasMaxLength(100);
+            b.Property(x => x.SerialNumber).HasMaxLength(100);
+            b.Property(x => x.AssignedBy).HasMaxLength(200);
+            b.Property(x => x.ReturnedTo).HasMaxLength(200);
+            b.Property(x => x.ConditionOnAssign).HasMaxLength(500);
+            b.Property(x => x.ConditionOnReturn).HasMaxLength(500);
+
+            b.HasIndex(x => x.EmployeeId);
+            b.HasIndex(x => new { x.EmployeeId, x.Status });
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<EmployeeHandbook>(b =>
+        {
+            b.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            b.Property(x => x.FilePath).HasMaxLength(500).IsRequired();
+            b.HasIndex(x => x.Title);
+        });
+
+        modelBuilder.Entity<EmployeeHandbookAcknowledgement>(b =>
+        {
+            b.HasIndex(x => new { x.EmployeeId, x.EmployeeHandbookId }).IsUnique();
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.EmployeeHandbook)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeHandbookId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<EmployeeOffboarding>(b =>
+        {
+            b.Property(x => x.Reason).HasMaxLength(2000);
+            b.HasIndex(x => x.EmployeeId);
+
+            b.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ExitInterview>(b =>
+        {
+            b.Property(x => x.Interviewer).HasMaxLength(200);
+            b.Property(x => x.Notes).HasMaxLength(4000);
+            b.HasIndex(x => x.EmployeeOffboardingId).IsUnique();
+
+            b.HasOne(x => x.EmployeeOffboarding)
+                .WithOne(o => o.ExitInterview)
+                .HasForeignKey<ExitInterview>(x => x.EmployeeOffboardingId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<OffboardingClearanceItem>(b =>
+        {
+            b.Property(x => x.DepartmentName).HasMaxLength(200).IsRequired();
+            b.Property(x => x.DecidedBy).HasMaxLength(200);
+            b.Property(x => x.Note).HasMaxLength(1000);
+            b.HasIndex(x => new { x.EmployeeOffboardingId, x.DepartmentName }).IsUnique();
+
+            b.HasOne(x => x.EmployeeOffboarding)
+                .WithMany(o => o.ClearanceItems)
+                .HasForeignKey(x => x.EmployeeOffboardingId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<FinalSettlement>(b =>
+        {
+            b.Property(x => x.TotalPayable).HasColumnType("decimal(18,2)");
+            b.Property(x => x.TotalDeductions).HasColumnType("decimal(18,2)");
+            b.Property(x => x.NetPayable).HasColumnType("decimal(18,2)");
+            b.Property(x => x.PreparedBy).HasMaxLength(200);
+            b.Property(x => x.Notes).HasMaxLength(4000);
+            b.HasIndex(x => x.EmployeeOffboardingId).IsUnique();
+
+            b.HasOne(x => x.EmployeeOffboarding)
+                .WithOne(o => o.FinalSettlement)
+                .HasForeignKey<FinalSettlement>(x => x.EmployeeOffboardingId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<JobPosting>(b =>

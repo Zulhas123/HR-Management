@@ -1,0 +1,41 @@
+@model HrSystem.Domain.Entities.EmployeeOffboarding
+@using HrSystem.Domain.Entities
+
+@{
+    Layout = null;
+    var employee = (Employee)ViewBag.Employee;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Experience Certificate</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { font-size: 22px; font-weight: bold; text-decoration: underline; }
+        .content { font-size: 14px; line-height: 1.6; }
+        .sign { margin-top: 60px; display: flex; justify-content: space-between; }
+        .box { width: 45%; border-top: 1px solid #000; padding-top: 6px; }
+        @@media print { body { margin: 15mm; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Experience Certificate</div>
+    </div>
+
+    <div class="content">
+        <p>This is to certify that <strong>@employee.FirstName @employee.LastName</strong> (Employee Code: <strong>@employee.EmployeeCode</strong>) worked with us as <strong>@(employee.Designation?.Name ?? "N/A")</strong> in <strong>@(employee.Department?.Name ?? "N/A")</strong>.</p>
+        <p>Employment period: <strong>@employee.JoinDate</strong> to <strong>@Model.LastWorkingDay</strong>.</p>
+        <p>We wish them success in their future endeavors.</p>
+        <p>Date of issue: <strong>@DateTime.Today.ToString("yyyy-MM-dd")</strong></p>
+    </div>
+
+    <div class="sign">
+        <div class="box">HR Department</div>
+        <div class="box">Authorized Signatory</div>
+    </div>
+</body>
+</html>

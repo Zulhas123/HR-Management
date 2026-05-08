@@ -1,0 +1,33 @@
+@model HrSystem.Web.ViewModels.LeaveEncashmentRequestFormVm
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="EmployeeId" class="form-label">Employee</label>
+            <select asp-for="EmployeeId" asp-items="Model.Employees" class="form-select"></select>
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label asp-for="LeaveTypeId" class="form-label">Leave Type</label>
+            <select asp-for="LeaveTypeId" asp-items="Model.LeaveTypes" class="form-select"></select>
+            <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="Year" class="form-label"></label>
+            <input asp-for="Year" class="form-control" />
+            <span asp-validation-for="Year" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label asp-for="DaysRequested" class="form-label">Days</label>
+            <input asp-for="DaysRequested" class="form-control" />
+            <span asp-validation-for="DaysRequested" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
