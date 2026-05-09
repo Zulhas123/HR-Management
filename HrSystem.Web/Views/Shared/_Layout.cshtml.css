@@ -1,5 +1,6 @@
 :root {
   --app-sidebar-width: 280px;
+  --app-sidebar-collapsed-width: 72px;
   --app-topbar-height: 56px;
 }
 
@@ -15,6 +16,7 @@ body {
 
 .app-topbar {
   height: var(--app-topbar-height);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 6px 24px rgba(15, 23, 42, 0.18);
 }
 
 .app-body {
@@ -27,6 +29,27 @@ body {
   background: #fff;
   border-right: 1px solid #e5e7eb;
   overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+}
+
+.sidebar-collapsed .app-sidebar {
+  width: var(--app-sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .app-nav-section,
+.sidebar-collapsed .app-nav-text,
+.sidebar-collapsed .app-nav-group-toggle::after {
+  display: none !important;
+}
+
+.sidebar-collapsed .app-nav .nav-link {
+  justify-content: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.sidebar-collapsed .app-nav-left {
+  justify-content: center;
 }
 
 .app-sidebar-offcanvas {
@@ -64,5 +87,87 @@ body {
 .app-nav .nav-link.active {
   background: #0d6efd;
   color: #fff;
+}
+
+.app-nav .app-nav-group-toggle.active {
+  background: rgba(13, 110, 253, 0.08);
+  color: #0d6efd;
+}
+
+.app-nav .collapse .nav-link.active {
+  background: rgba(13, 110, 253, 0.12);
+  color: #0d6efd;
+}
+
+.app-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.app-nav-group-toggle {
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0 !important;
+}
+
+.app-nav .nav-link:focus,
+.app-nav .nav-link:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.app-nav-group-toggle::-moz-focus-inner {
+  border: 0;
+}
+
+.app-nav-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.app-nav-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.app-nav-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.app-nav-group-toggle::after {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  opacity: 0.55;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.app-nav-group-toggle:not(.collapsed)::after {
+  transform: rotate(45deg);
+  opacity: 0.85;
+}
+
+.app-nav .collapse .nav-link {
+  font-size: 0.92rem;
+  padding-left: 0.9rem;
+  border-radius: 0.5rem;
 }
 

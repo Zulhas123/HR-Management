@@ -4,88 +4,235 @@
 @{
     var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).Trim();
     string Active(params string[] controllers) => controllers.Contains(controller, StringComparer.OrdinalIgnoreCase) ? "active" : string.Empty;
+    bool IsActive(params string[] controllers) => controllers.Contains(controller, StringComparer.OrdinalIgnoreCase);
+    string CollapseShow(params string[] controllers) => IsActive(controllers) ? "show" : string.Empty;
+    string CollapseExpanded(params string[] controllers) => IsActive(controllers) ? "true" : "false";
+    string CollapseButtonState(params string[] controllers) => IsActive(controllers) ? string.Empty : "collapsed";
+    string GroupActive(params string[] controllers) => IsActive(controllers) ? "active" : string.Empty;
 }
 
 <nav class="app-nav">
-    <div class="app-nav-section">Main</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
+    <ul class="nav flex-column gap-1 px-2 py-2">
         <li class="nav-item">
-            <a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
+            <a class="nav-link app-nav-link @Active("Home")" asp-controller="Home" asp-action="Index" title="Dashboard">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Dashboard</span>
+                </span>
+            </a>
         </li>
-    </ul>
 
-    <div class="app-nav-section">Employees</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item">
-            <a class="nav-link @Active("Employees")" asp-controller="Employees" asp-action="Index">Employees</a>
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("Employees", "EmployeeDocuments", "EmployeeEducations", "EmployeeExperiences", "EmployeeEmergencyContacts", "EmployeeFamilyMembers", "EmployeeTransfers", "EmployeePromotions") @CollapseButtonState("Employees", "EmployeeDocuments", "EmployeeEducations", "EmployeeExperiences", "EmployeeEmergencyContacts", "EmployeeFamilyMembers", "EmployeeTransfers", "EmployeePromotions")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-employees"
+                    aria-expanded="@CollapseExpanded("Employees", "EmployeeDocuments", "EmployeeEducations", "EmployeeExperiences", "EmployeeEmergencyContacts", "EmployeeFamilyMembers", "EmployeeTransfers", "EmployeePromotions")"
+                    aria-controls="nav-employees"
+                    title="Employees">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-6-3.5z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Employees</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("Employees", "EmployeeDocuments", "EmployeeEducations", "EmployeeExperiences", "EmployeeEmergencyContacts", "EmployeeFamilyMembers", "EmployeeTransfers", "EmployeePromotions")" id="nav-employees">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Employees")" asp-controller="Employees" asp-action="Index" title="Directory"><span class="app-nav-text">Directory</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeDocuments")" asp-controller="EmployeeDocuments" asp-action="Index" title="Documents"><span class="app-nav-text">Documents</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeEducations")" asp-controller="EmployeeEducations" asp-action="Index" title="Education"><span class="app-nav-text">Education</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeExperiences")" asp-controller="EmployeeExperiences" asp-action="Index" title="Experience"><span class="app-nav-text">Experience</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeEmergencyContacts")" asp-controller="EmployeeEmergencyContacts" asp-action="Index" title="Emergency Contacts"><span class="app-nav-text">Emergency</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeFamilyMembers")" asp-controller="EmployeeFamilyMembers" asp-action="Index" title="Family"><span class="app-nav-text">Family</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeTransfers")" asp-controller="EmployeeTransfers" asp-action="Index" title="Transfers"><span class="app-nav-text">Transfers</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeePromotions")" asp-controller="EmployeePromotions" asp-action="Index" title="Promotions"><span class="app-nav-text">Promotions</span></a></li>
+                </ul>
+            </div>
         </li>
-    </ul>
 
-    <div class="app-nav-section">Attendance</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item">
-            <a class="nav-link @Active("Attendance")" asp-controller="Attendance" asp-action="Index">Attendance</a>
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("Attendance", "Shifts") @CollapseButtonState("Attendance", "Shifts")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-attendance"
+                    aria-expanded="@CollapseExpanded("Attendance", "Shifts")"
+                    aria-controls="nav-attendance"
+                    title="Attendance">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 11h5v-2h-4V6h-2v7z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Attendance</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("Attendance", "Shifts")" id="nav-attendance">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Attendance")" asp-controller="Attendance" asp-action="Index" title="Attendance"><span class="app-nav-text">Records</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Shifts")" asp-controller="Shifts" asp-action="Index" title="Shifts"><span class="app-nav-text">Shifts</span></a></li>
+                </ul>
+            </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link @Active("Shifts")" asp-controller="Shifts" asp-action="Index">Shifts</a>
+
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("LeaveRequests", "LeaveTypes", "LeaveBalances", "LeaveEncashments", "Holidays", "WeekendConfiguration") @CollapseButtonState("LeaveRequests", "LeaveTypes", "LeaveBalances", "LeaveEncashments", "Holidays", "WeekendConfiguration")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-leave"
+                    aria-expanded="@CollapseExpanded("LeaveRequests", "LeaveTypes", "LeaveBalances", "LeaveEncashments", "Holidays", "WeekendConfiguration")"
+                    aria-controls="nav-leave"
+                    title="Leave">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 11h10v2H7v-2zm0 4h7v2H7v-2zM19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Leave</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("LeaveRequests", "LeaveTypes", "LeaveBalances", "LeaveEncashments", "Holidays", "WeekendConfiguration")" id="nav-leave">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("LeaveRequests")" asp-controller="LeaveRequests" asp-action="Index" title="Leave Requests"><span class="app-nav-text">Requests</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("LeaveTypes")" asp-controller="LeaveTypes" asp-action="Index" title="Leave Types"><span class="app-nav-text">Types</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("LeaveBalances")" asp-controller="LeaveBalances" asp-action="Index" title="Leave Balances"><span class="app-nav-text">Balances</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("LeaveEncashments")" asp-controller="LeaveEncashments" asp-action="Index" title="Encashments"><span class="app-nav-text">Encashments</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Holidays")" asp-controller="Holidays" asp-action="Index" title="Holidays"><span class="app-nav-text">Holidays</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("WeekendConfiguration")" asp-controller="WeekendConfiguration" asp-action="Index" title="Weekend Config"><span class="app-nav-text">Weekends</span></a></li>
+                </ul>
+            </div>
         </li>
-    </ul>
 
-    <div class="app-nav-section">Leave</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("LeaveRequests")" asp-controller="LeaveRequests" asp-action="Index">Leave Requests</a></li>
-        <li class="nav-item"><a class="nav-link @Active("LeaveTypes")" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a></li>
-        <li class="nav-item"><a class="nav-link @Active("LeaveBalances")" asp-controller="LeaveBalances" asp-action="Index">Leave Balances</a></li>
-        <li class="nav-item"><a class="nav-link @Active("LeaveEncashments")" asp-controller="LeaveEncashments" asp-action="Index">Encashments</a></li>
-        <li class="nav-item"><a class="nav-link @Active("Holidays")" asp-controller="Holidays" asp-action="Index">Holidays</a></li>
-        <li class="nav-item"><a class="nav-link @Active("WeekendConfiguration")" asp-controller="WeekendConfiguration" asp-action="Index">Weekend Config</a></li>
-    </ul>
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("JobPostings", "Candidates", "JobApplications", "Interviews") @CollapseButtonState("JobPostings", "Candidates", "JobApplications", "Interviews")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-recruitment"
+                    aria-expanded="@CollapseExpanded("JobPostings", "Candidates", "JobApplications", "Interviews")"
+                    aria-controls="nav-recruitment"
+                    title="Recruitment">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 2h4a2 2 0 012 2v2h4a2 2 0 012 2v3H2V8a2 2 0 012-2h4V4a2 2 0 012-2zm4 4V4h-4v2h4zM2 13h20v7a2 2 0 01-2 2H4a2 2 0 01-2-2v-7zm9 2v2h2v-2h-2z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Recruitment</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("JobPostings", "Candidates", "JobApplications", "Interviews")" id="nav-recruitment">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("JobPostings")" asp-controller="JobPostings" asp-action="Index" title="Job Postings"><span class="app-nav-text">Job Postings</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Candidates")" asp-controller="Candidates" asp-action="Index" title="Candidates"><span class="app-nav-text">Candidates</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("JobApplications")" asp-controller="JobApplications" asp-action="Index" title="Applications"><span class="app-nav-text">Applications</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Interviews")" asp-controller="Interviews" asp-action="Index" title="Interviews"><span class="app-nav-text">Interviews</span></a></li>
+                </ul>
+            </div>
+        </li>
 
-    <div class="app-nav-section">Recruitment</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("JobPostings")" asp-controller="JobPostings" asp-action="Index">Job Postings</a></li>
-        <li class="nav-item"><a class="nav-link @Active("Candidates")" asp-controller="Candidates" asp-action="Index">Candidates</a></li>
-        <li class="nav-item"><a class="nav-link @Active("JobApplications")" asp-controller="JobApplications" asp-action="Index">Applications</a></li>
-        <li class="nav-item"><a class="nav-link @Active("Interviews")" asp-controller="Interviews" asp-action="Index">Interviews</a></li>
-    </ul>
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("EmployeeTasks", "DailyWorkLogs", "ProductivityReports") @CollapseButtonState("EmployeeTasks", "DailyWorkLogs", "ProductivityReports")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-workforce"
+                    aria-expanded="@CollapseExpanded("EmployeeTasks", "DailyWorkLogs", "ProductivityReports")"
+                    aria-controls="nav-workforce"
+                    title="Workforce">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h2v18H3V3zm16 6h2v12h-2V9zM7 13h2v8H7v-8zm4-6h2v14h-2V7zm4 4h2v10h-2V11z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Workforce</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("EmployeeTasks", "DailyWorkLogs", "ProductivityReports")" id="nav-workforce">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeTasks")" asp-controller="EmployeeTasks" asp-action="Index" title="Tasks"><span class="app-nav-text">Tasks</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("DailyWorkLogs")" asp-controller="DailyWorkLogs" asp-action="Index" title="Daily Logs"><span class="app-nav-text">Daily Logs</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("ProductivityReports")" asp-controller="ProductivityReports" asp-action="Index" title="Reports"><span class="app-nav-text">Reports</span></a></li>
+                </ul>
+            </div>
+        </li>
 
-    <div class="app-nav-section">Workforce</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("EmployeeTasks")" asp-controller="EmployeeTasks" asp-action="Index">Tasks</a></li>
-        <li class="nav-item"><a class="nav-link @Active("DailyWorkLogs")" asp-controller="DailyWorkLogs" asp-action="Index">Daily Logs</a></li>
-        <li class="nav-item"><a class="nav-link @Active("ProductivityReports")" asp-controller="ProductivityReports" asp-action="Index">Reports</a></li>
-    </ul>
-
-    <div class="app-nav-section">Overtime</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("OvertimeRequests")" asp-controller="OvertimeRequests" asp-action="Index">Requests</a></li>
-    </ul>
-
-    <div class="app-nav-section">Onboarding</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("Onboardings")" asp-controller="Onboardings" asp-action="Index">Onboardings</a></li>
-        <li class="nav-item"><a class="nav-link @Active("EmployeeAssets")" asp-controller="EmployeeAssets" asp-action="Index">Asset Assignments</a></li>
-        <li class="nav-item"><a class="nav-link @Active("EmployeeHandbooks")" asp-controller="EmployeeHandbooks" asp-action="Index">Handbooks</a></li>
-    </ul>
-
-    <div class="app-nav-section">Offboarding</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("Offboardings")" asp-controller="Offboardings" asp-action="Index">Offboardings</a></li>
-    </ul>
-
-    <div class="app-nav-section">Master Data</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2">
-        <li class="nav-item"><a class="nav-link @Active("Departments")" asp-controller="Departments" asp-action="Index">Departments</a></li>
-        <li class="nav-item"><a class="nav-link @Active("Designations")" asp-controller="Designations" asp-action="Index">Designations</a></li>
-        <li class="nav-item"><a class="nav-link @Active("EmploymentTypes")" asp-controller="EmploymentTypes" asp-action="Index">Employment Types</a></li>
-        <li class="nav-item"><a class="nav-link @Active("Religions")" asp-controller="Religions" asp-action="Index">Religions</a></li>
-        <li class="nav-item"><a class="nav-link @Active("BloodGroups")" asp-controller="BloodGroups" asp-action="Index">Blood Groups</a></li>
-    </ul>
-
-    <div class="app-nav-section">System</div>
-    <ul class="nav nav-pills flex-column gap-1 px-2 pb-3">
         <li class="nav-item">
-            <a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a class="nav-link app-nav-link @Active("OvertimeRequests")" asp-controller="OvertimeRequests" asp-action="Index" title="Overtime Requests">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 00-9.95 11h2.02A8 8 0 1112 20a7.9 7.9 0 01-5.65-2.35L8 16H2v6l2.05-2.05A9.96 9.96 0 0012 22 10 10 0 0012 2zm1 5h-2v6l5 3 1-1.73-4-2.27V7z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Overtime Requests</span>
+                </span>
+            </a>
+        </li>
+
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("Onboardings", "EmployeeAssets", "EmployeeHandbooks") @CollapseButtonState("Onboardings", "EmployeeAssets", "EmployeeHandbooks")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-onboarding"
+                    aria-expanded="@CollapseExpanded("Onboardings", "EmployeeAssets", "EmployeeHandbooks")"
+                    aria-controls="nav-onboarding"
+                    title="Onboarding">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15 12c2.21 0 4-1.79 4-4S17.21 4 15 4s-4 1.79-4 4 1.79 4 4 4zm-9 6v-1c0-2.76 4.03-4 7-4 .93 0 1.95.12 2.96.36C14.76 14.3 14 15.57 14 17v1H6zm13-1v-2h-2v-2h2v-2h2v2h2v2h-2v2h-2z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Onboarding</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("Onboardings", "EmployeeAssets", "EmployeeHandbooks")" id="nav-onboarding">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Onboardings")" asp-controller="Onboardings" asp-action="Index" title="Onboardings"><span class="app-nav-text">Onboardings</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeAssets")" asp-controller="EmployeeAssets" asp-action="Index" title="Asset Assignments"><span class="app-nav-text">Assets</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmployeeHandbooks")" asp-controller="EmployeeHandbooks" asp-action="Index" title="Handbooks"><span class="app-nav-text">Handbooks</span></a></li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link app-nav-link @Active("Offboardings")" asp-controller="Offboardings" asp-action="Index" title="Offboardings">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 3-1.34 3-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V20h10v-3c0-1.54.62-2.73 1.6-3.61C11.2 13.14 9.57 13 8 13zm8 0c-1.01 0-2.34.24-3.5.8.9.72 1.5 1.74 1.5 3.2v3h9v-3.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Offboardings</span>
+                </span>
+            </a>
+        </li>
+
+        <li class="nav-item nav-group">
+            <button class="nav-link app-nav-link app-nav-group-toggle @GroupActive("Departments", "Designations", "EmploymentTypes", "Religions", "BloodGroups") @CollapseButtonState("Departments", "Designations", "EmploymentTypes", "Religions", "BloodGroups")"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nav-master"
+                    aria-expanded="@CollapseExpanded("Departments", "Designations", "EmploymentTypes", "Religions", "BloodGroups")"
+                    aria-controls="nav-master"
+                    title="Master Data">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10 3H3v7h7V3zm11 0h-7v7h7V3zM10 14H3v7h7v-7zm11 0h-7v7h7v-7z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Master Data</span>
+                </span>
+            </button>
+            <div class="collapse @CollapseShow("Departments", "Designations", "EmploymentTypes", "Religions", "BloodGroups")" id="nav-master">
+                <ul class="nav flex-column gap-1 ps-3 pe-2 pb-1">
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Departments")" asp-controller="Departments" asp-action="Index" title="Departments"><span class="app-nav-text">Departments</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Designations")" asp-controller="Designations" asp-action="Index" title="Designations"><span class="app-nav-text">Designations</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("EmploymentTypes")" asp-controller="EmploymentTypes" asp-action="Index" title="Employment Types"><span class="app-nav-text">Employment Types</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("Religions")" asp-controller="Religions" asp-action="Index" title="Religions"><span class="app-nav-text">Religions</span></a></li>
+                    <li class="nav-item"><a class="nav-link app-nav-link @Active("BloodGroups")" asp-controller="BloodGroups" asp-action="Index" title="Blood Groups"><span class="app-nav-text">Blood Groups</span></a></li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link app-nav-link @Active("Home")" asp-controller="Home" asp-action="Privacy" title="Privacy">
+                <span class="app-nav-left">
+                    <span class="app-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1l9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4zm0 5a3 3 0 00-3 3v2H8v8h8v-8h-1V9a3 3 0 00-3-3zm-1 5V9a1 1 0 012 0v2h-2z"/></svg>
+                    </span>
+                    <span class="app-nav-text">Privacy</span>
+                </span>
+            </a>
         </li>
     </ul>
 </nav>

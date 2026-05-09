@@ -57,6 +57,37 @@ Important: change `Jwt:Key` before using in real environments.
 
 ## Run (LocalDB / SQL Server)
 
+### Visual Studio
+
+1. Open `HrSystem.sln`
+2. Run the web app:
+   - Right-click `HrSystem.Web` -> **Set as Startup Project**
+   - Or: right-click Solution -> **Properties** -> **Configure Startup Projects** -> set only `HrSystem.Web` to **Start**
+3. Press **F5**
+
+If Visual Studio still tries to start a class library:
+
+- Close Visual Studio
+- Run `powershell -ExecutionPolicy Bypass -File scripts/reset-vs-settings.ps1`
+- Reopen `HrSystem.sln` and set `HrSystem.Web` as Startup Project again
+
+By default this repo uses **SQLite** in Development so it runs without installing SQL Server:
+
+- `HrSystem.Web/appsettings.Development.json` -> `Database:Provider = Sqlite`
+- DB file: `HrSystem.Web/hrsystem.dev.db`
+
+To use SQL Server (SQLExpress/LocalDB/Docker) in Development, set:
+
+- `HrSystem.Web/appsettings.Development.json` -> `Database:Provider = SqlServer`
+- And set `ConnectionStrings:DefaultConnection` to your SQL Server connection string
+
+### VS Code
+
+1. Open the repo folder in VS Code
+2. Press **F5** using the `HrSystem.Web` launch configuration (requires the C# extension)
+
+VS Code uses `.vscode/launch.json` and `.vscode/tasks.json` to build and launch `HrSystem.Web`.
+
 1. Update `HrSystem.Web/appsettings.json` -> `Jwt:Key`
 2. Run:
    - `dotnet run --project HrSystem.Web`

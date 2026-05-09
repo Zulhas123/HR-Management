@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <!--
+      Workaround for environments where the .NET SDK workload resolver is partially installed
+      (e.g. missing Workload*Locator SDK folders), which can cause restore/build to fail with
+      MSB4276. This repo does not use optional SDK workloads.
+    -->
+    <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
+    <!-- Workaround: some environments fail during NuGet's static-graph evaluation with no surfaced error. -->
+    <RestoreUseStaticGraphEvaluation>false</RestoreUseStaticGraphEvaluation>
+  </PropertyGroup>
+</Project>

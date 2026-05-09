@@ -96,9 +96,19 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
+
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<HrSystemDbContext>();
-    await db.Database.EnsureCreatedAsync();
+    try
+    {
+        await db.Database.EnsureCreatedAsync();
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Database initialization failed. Check ConnectionStrings:DefaultConnection and ensure SQL Server is running.");
+        goto SkipDevSeeding;
+    }
 
     if (!await db.EmploymentTypes.AnyAsync())
     {
@@ -258,6 +268,8 @@ if (app.Environment.IsDevelopment())
 
     await db.SaveChangesAsync();
 }
+
+SkipDevSeeding: ;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -12,13 +12,34 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrWhiteSpace(connectionString))
+        var provider = configuration["Database:Provider"];
+        if (string.IsNullOrWhiteSpace(provider))
         {
-            throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
+            var env = configuration["ASPNETCORE_ENVIRONMENT"];
+            provider = string.Equals(env, "Development", StringComparison.OrdinalIgnoreCase) ? "Sqlite" : "SqlServer";
         }
 
-        services.AddDbContext<HrSystemDbContext>(options => options.UseSqlServer(connectionString));
+        if (string.Equals(provider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+        {
+            var sqliteConnection = configuration.GetConnectionString("Sqlite");
+            if (string.IsNullOrWhiteSpace(sqliteConnection))
+            {
+                sqliteConnection = "Data Source=hrsystem.dev.db";
+            }
+
+            services.AddDbContext<HrSystemDbContext>(options => options.UseSqlite(sqliteConnection));
+        }
+        else
+        {
+            var sqlConnection = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(sqlConnection))
+            {
+                throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
+            }
+
+            services.AddDbContext<HrSystemDbContext>(options =>
+                options.UseSqlServer(sqlConnection, sql => sql.EnableRetryOnFailure()));
+        }
 
         services.AddScoped<IRepository<Department>, Repository<Department>>();
         services.AddScoped<IRepository<Designation>, Repository<Designation>>();
